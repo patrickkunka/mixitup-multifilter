@@ -257,7 +257,7 @@ h.extend(mixitup.FilterGroup.prototype, {
             attributeName   = '',
             selector        = '';
 
-        if (input.type.match(/text|search/g)) {
+        if (input.type.match(/text|search|password/g)) {
             attributeName = input.getAttribute('data-search-attribute');
 
             if (!attributeName) {
