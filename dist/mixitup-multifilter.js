@@ -42,7 +42,7 @@
         };
 
         mixitup.Config.registerAction('beforeConstruct', 'multifilter', function() {
-            this.multifilter    = new mixitup.ConfigMultifilter();
+            this.multifilter = new mixitup.ConfigMultifilter();
         });
 
         // dom
@@ -54,7 +54,8 @@
         // mixer
 
         mixitup.Mixer.registerAction('afterConstruct', 'multifilter', function() {
-            this.filterGroups = [];
+            this.filterGroups               = [];
+            this.multifilterFormEventTracker    = null;
         });
 
         mixitup.Mixer.registerAction('afterCacheDom', 'multifilter', function() {
@@ -87,11 +88,28 @@
             self.config.controls.live = true; // force live controls if multifilter is enabled
         });
 
+        mixitup.Mixer.registerAction('afterSanitizeConfig', 'multifilter', function() {
+            var self = this;
+
+            self.config.multifilter.logicBetweenGroups = self.config.multifilter.logicBetweenGroups.toLowerCase().trim();
+            self.config.multifilter.logicWithinGroups = self.config.multifilter.logicWithinGroups.toLowerCase().trim();
+        });
+
         mixitup.Mixer.registerAction('afterAttach', 'multifilter', function() {
             var self = this;
 
             if (self.dom.filterGroups.length) {
                 self.indexFilterGroups();
+            }
+        });
+
+        mixitup.Mixer.registerAction('afterUpdateControls', 'multifilter', function() {
+            var self    = this,
+                group   = null,
+                i       = -1;
+
+            for (i = 0; group = self.filterGroups[i]; i++) {
+                group.updateControls();
             }
         });
 
@@ -105,7 +123,7 @@
                     i             = -1;
 
                 for (i = 0; el = self.dom.filterGroups[i]; i++) {
-                    filterGroup = new mixitup.filterGroup();
+                    filterGroup = new mixitup.FilterGroup();
 
                     filterGroup.init(el, self);
 
@@ -113,21 +131,33 @@
                 }
             },
 
-            parseFilterGroups: function() {
-                var self              = this,
-                    buildSelector     = null,
-                    crawl             = null,
-                    activeFilters     = null,
-                    matrix            = [],
-                    compoundSelectors = [],
-                    trackers          = [],
-                    i                 = -1;
+            parseMultifilters: function() {
+                var self        = this,
+                    paths       = self.getMultifilterPaths(),
+                    selector    = self.buildSelectorFromPaths(paths);
+
+                if (selector === '') {
+                    selector = self.config.controls.toggleDefault;
+                }
+
+                return self.filter(selector);
+            },
+
+            getMultifilterPaths: function() {
+                var self       = this,
+                    buildPath  = null,
+                    crawl      = null,
+                    nodes      = null,
+                    matrix     = [],
+                    paths      = [],
+                    trackers   = [],
+                    i          = -1;
 
                 for (i = 0; i < self.filterGroups.length; i++) {
                     // Filter out groups without any active filters
 
-                    if ((activeFilters = self.filterGroups[i].activeFilters).length) {
-                        matrix.push(activeFilters);
+                    if ((nodes = self.filterGroups[i].activeSelectors).length) {
+                        matrix.push(nodes);
 
                         // Initialise tracker for each group
 
@@ -135,24 +165,34 @@
                     }
                 }
 
-                buildSelector = function() {
-                    var i = -1,
-                        compoundSelector = [];
+                buildPath = function() {
+                    var node            = null,
+                        path            = [],
+                        i               = -1;
 
                     for (i = 0; i < matrix.length; i++) {
-                        compoundSelector.push(matrix[i][trackers[i]]);
+                        node = matrix[i][trackers[i]];
+
+                        if (Array.isArray(node)) {
+                            // AND logic within group
+
+                            node = node.join('');
+                        }
+
+                        path.push(node);
                     }
 
-                    compoundSelectors.push(compoundSelector.join(''));
+                    path = h.clean(path);
+
+                    paths.push(path);
                 };
 
                 crawl = function(index) {
                     index = index || 0;
 
-                    var activeFilters = matrix[index],
-                        i = 0;
+                    var nodes = matrix[index];
 
-                    while (trackers[index] < activeFilters.length) {
+                    while (trackers[index] < nodes.length) {
                         if (index < matrix.length - 1) {
                             // If not last, recurse
 
@@ -160,7 +200,7 @@
                         } else {
                             // Last, build selector
 
-                            buildSelector();
+                            buildPath();
                         }
 
                         trackers[index]++;
@@ -173,23 +213,96 @@
 
                 crawl();
 
-                return compoundSelectors.join(', ');
+                return paths;
+            },
+
+            buildSelectorFromPaths: function(paths) {
+                var self           = this,
+                    path           = null,
+                    output         = [],
+                    pathSelector   = '',
+                    nodeDelineator = '',
+                    i              = -1;
+
+                if (!paths.length) {
+                    return '';
+                }
+
+                if (self.config.multifilter.logicBetweenGroups === 'or') {
+                    nodeDelineator = ', ';
+                }
+
+                if (paths.length > 1) {
+                    for (i = 0; i < paths.length; i++) {
+                        path = paths[i];
+
+                        pathSelector = path.join(nodeDelineator);
+
+                        if (output.indexOf(pathSelector) < 0) {
+                            output.push(pathSelector);
+                        }
+                    }
+
+                    return output.join(', ');
+                } else {
+                    return paths[0].join(nodeDelineator);
+                }
             }
         });
 
-        mixitup.filterGroup = function() {
-            this.el             = null;
-            this.activeFilters  = [];
-            this.handler        = null;
-            this.mixer          = null;
+        mixitup.MultifilterFormEventTracker = function() {
+            this.form           = null;
+            this.totalBound     = 0;
+            this.totalHandled   = 0;
+
+            h.seal(this);
         };
 
-        h.extend(mixitup.filterGroup.prototype, {
-            init: function(el, mixer) {
-                this.el = el;
-                this.mixer = mixer;
+        // FilterGroup
 
-                this.bindEvents();
+        mixitup.FilterGroupDom = function() {
+            this.el     = null;
+            this.form   = null;
+
+            h.seal(this);
+        };
+
+        mixitup.FilterGroup = function() {
+            this.dom                = new mixitup.FilterGroupDom();
+            this.activeSelectors    = [];
+            this.activeToggles      = [];
+            this.handler            = null;
+            this.mixer              = null;
+            this.logic              = 'or';
+            this.parseOn            = 'change';
+
+            h.seal(this);
+        };
+
+        h.extend(mixitup.FilterGroup.prototype, {
+            init: function(el, mixer) {
+                var self    = this,
+                    logic   = el.getAttribute('data-logic');
+
+                self.dom.el = el;
+
+                self.cacheDom();
+
+                self.mixer = mixer;
+
+                if ((logic && logic.toLowerCase() === 'and') || mixer.config.multifilter.logicWithinGroup === 'and') {
+                    // override default group logic
+
+                    self.logic = 'and';
+                }
+
+                self.bindEvents();
+            },
+
+            cacheDom: function() {
+                var self = this;
+
+                self.dom.form = h.closestParent(self.dom.el, 'form');
             },
 
             bindEvents: function() {
@@ -197,26 +310,35 @@
 
                 self.handler = function(e) {
                     switch (e.type) {
-                        case 'click':
-                            self.handleClick(e);
+                        case 'reset':
+                        case 'submit':
+                            self.handleFormEvent(e);
 
                             break;
-                        case 'change':
-                            self.handleChange(e);
-
-                            break;
+                        default:
+                            self['handle' + h.pascalCase(e.type)](e);
                     }
                 };
 
-                h.on(self.el, 'click', self.handler);
-                h.on(self.el, 'change', self.handler);
+                h.on(self.dom.el, 'click', self.handler);
+                h.on(self.dom.el, 'change', self.handler);
+
+                if (self.dom.form) {
+                    h.on(self.dom.form, 'reset', self.handler);
+                    h.on(self.dom.form, 'submit', self.handler);
+                }
             },
 
             unbindEvents: function() {
                 var self = this;
 
-                h.off(self.el, 'click', self.handler);
-                h.off(self.el, 'change', self.handler);
+                h.off(self.dom.el, 'click', self.handler);
+                h.off(self.dom.el, 'change', self.handler);
+
+                if (self.dom.form) {
+                    h.off(self.dom.form, 'reset', self.handler);
+                    h.off(self.dom.form, 'submit', self.handler);
+                }
 
                 self.handler = null;
             },
@@ -234,18 +356,30 @@
                 if (controlEl.matches('[data-filter]')) {
                     selector = controlEl.getAttribute('data-filter');
 
-                    self.activeFilters = [selector];
+                    self.activeSelectors = [selector];
                 } else if (controlEl.matches('[data-toggle]')) {
                     selector = controlEl.getAttribute('data-toggle');
 
-                    if ((index = self.activeFilters.indexOf(selector)) > -1) {
-                        self.activeFilters.splice(index, 1);
+                    if ((index = self.activeToggles.indexOf(selector)) > -1) {
+                        self.activeToggles.splice(index, 1);
                     } else {
-                        self.activeFilters.push(selector);
+                        self.activeToggles.push(selector);
+                    }
+
+                    if (self.logic === 'and') {
+                        // Compress into single node
+
+                        self.activeSelectors = [self.activeToggles];
+                    } else {
+                        self.activeSelectors = self.activeToggles;
                     }
                 }
 
-                console.log(self.mixer.parseFilterGroups());
+                self.updateControls();
+
+                if (self.mixer.config.multifilter.parseOn === 'change') {
+                    self.mixer.parseMultifilters();
+                }
             },
 
             handleChange: function(e) {
@@ -270,20 +404,62 @@
                         break;
                 }
 
-                console.log(self.mixer.parseFilterGroups());
+                if (self.mixer.config.multifilter.parseOn === 'change') {
+                    self.mixer.parseMultifilters();
+                }
+            },
+
+            handleFormEvent: function(e) {
+                var self            = this,
+                    tracker         = null,
+                    group           = null,
+                    i               = -1;
+
+                if (e.type === 'reset') {
+                    self.activeToggles   = [];
+                    self.activeSelectors = [];
+
+                    self.updateControls();
+                }
+
+                if (!self.mixer.multifilterFormEventTracker) {
+                    tracker = self.mixer.multifilterFormEventTracker = new mixitup.MultifilterFormEventTracker();
+
+                    tracker.form = e.target;
+
+                    for (i = 0; group = self.mixer.filterGroups[i]; i++) {
+                        if (group.dom.form !== e.target) continue;
+
+                        tracker.totalBound++;
+                    }
+                } else {
+                    tracker = self.mixer.multifilterFormEventTracker;
+                }
+
+                if (e.target === tracker.form) {
+                    tracker.totalHandled++;
+
+                    if (tracker.totalHandled === tracker.totalBound) {
+                        self.mixer.multifilterFormEventTracker = null;
+
+                        if (self.mixer.config.multifilter.parseOn === 'change') {
+                            self.mixer.parseMultifilters();
+                        }
+                    }
+                }
             },
 
             getSingleValue: function(input) {
                 var self = this;
 
                 if (input.value) {
-                    self.activeFilters = [input.value];
+                    self.activeSelectors = [input.value];
                 }
             },
 
             getMultipleValues: function(input) {
                 var self            = this,
-                    activeFilters   = [],
+                    activeSelectors   = [],
                     query           = '',
                     item            = null,
                     items           = null,
@@ -298,15 +474,51 @@
                         query = 'option';
                 }
 
-                items = self.el.querySelectorAll(query);
+                items = self.dom.el.querySelectorAll(query);
 
                 for (i = 0; item = items[i]; i++) {
                     if ((item.checked || item.selected) && item.value) {
-                        activeFilters.push(item.value);
+                        activeSelectors.push(item.value);
                     }
                 }
 
-                self.activeFilters = activeFilters;
+                if (self.logic === 'and') {
+                    // Compress into single node
+
+                    activeSelectors = [activeSelectors];
+                }
+
+                self.activeSelectors = activeSelectors;
+            },
+
+            updateControls: function() {
+                var self        = this,
+                    controlsEls = self.dom.el.querySelectorAll('[data-filter], [data-toggle]'),
+                    controlEl   = null,
+                    type        = 'filter',
+                    i           = -1;
+
+                for (i = 0; controlEl = controlsEls[i]; i++) {
+                    if (controlEl.getAttribute('data-toggle')) {
+                        type = 'toggle';
+                    }
+
+                    self.updateControl(controlEl, type);
+                }
+            },
+
+            updateControl: function(controlEl, type) {
+                var self            = this,
+                    selector        = controlEl.getAttribute('data-' + type),
+                    activeClassName = '';
+
+                activeClassName = h.getClassname(self.mixer.config.classNames, type, self.mixer.config.classNames.modifierActive);
+
+                if (self.activeSelectors.indexOf(selector) > -1) {
+                    h.addClass(controlEl, activeClassName);
+                } else {
+                    h.removeClass(controlEl, activeClassName);
+                }
             }
         });
     };
