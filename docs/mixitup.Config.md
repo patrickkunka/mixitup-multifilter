@@ -109,4 +109,20 @@ time to trigger the parsing of filter groups and filter the mixer.
 |---  | ---
 |`string`| `'change'`
 
+### keyupThrottleDuration
+
+
+
+
+An integer dictating the duration in ms that must elapse between keyup
+events in order to trigger a change.
+
+Setting a comfortable delay of ~350ms prevents the mixer from being
+thrashed while typing occurs.
+
+
+|Type | Default
+|---  | ---
+|`number`| `350`
+
 

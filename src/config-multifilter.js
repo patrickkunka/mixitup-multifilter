@@ -105,5 +105,21 @@ mixitup.ConfigMultifilter = function() {
 
     this.parseOn = 'change';
 
+    /**
+     * An integer dictating the duration in ms that must elapse between keyup
+     * events in order to trigger a change.
+     *
+     * Setting a comfortable delay of ~350ms prevents the mixer from being
+     * thrashed while typing occurs.
+     *
+     * @name        keyupThrottleDuration
+     * @memberof    mixitup.Config.multifilter
+     * @instance
+     * @type        {number}
+     * @default     350
+     */
+
+    this.keyupThrottleDuration = 350;
+
     h.seal(this);
 };

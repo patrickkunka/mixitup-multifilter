@@ -8,6 +8,7 @@ mixitup.FilterGroup = function() {
     this.mixer              = null;
     this.logic              = 'or';
     this.parseOn            = 'change';
+    this.keyupTimeout       = -1;
 
     h.seal(this);
 };
@@ -73,6 +74,7 @@ h.extend(mixitup.FilterGroup.prototype, {
 
         h.on(self.dom.el, 'click', self.handler);
         h.on(self.dom.el, 'change', self.handler);
+        h.on(self.dom.el, 'keyup', self.handler);
 
         if (self.dom.form) {
             h.on(self.dom.form, 'reset', self.handler);
@@ -90,6 +92,7 @@ h.extend(mixitup.FilterGroup.prototype, {
 
         h.off(self.dom.el, 'click', self.handler);
         h.off(self.dom.el, 'change', self.handler);
+        h.off(self.dom.el, 'keyup', self.handler);
 
         if (self.dom.form) {
             h.off(self.dom.form, 'reset', self.handler);
@@ -177,6 +180,24 @@ h.extend(mixitup.FilterGroup.prototype, {
         }
     },
 
+    handleKeyup: function(e) {
+        var self    = this,
+            input   = e.target;
+
+        if (self.mixer.config.multifilter.parseOn !== 'change') {
+            self.mixer.getSingleValue(input);
+
+            return;
+        }
+
+        clearTimeout(self.keyupTimeout);
+
+        self.keyupTimeout = setTimeout(function() {
+            self.getSingleValue(input);
+            self.mixer.parseFilterGroups();
+        }, self.mixer.config.multifilter.keyupThrottleDuration);
+    },
+
     /**
      * @private
      * @param   {Event} e
@@ -232,10 +253,30 @@ h.extend(mixitup.FilterGroup.prototype, {
      */
 
     getSingleValue: function(input) {
-        var self = this;
+        var self            = this,
+            attributeName   = '',
+            selector        = '';
+
+        if (input.type.match(/text|search/g)) {
+            attributeName = input.getAttribute('data-search-attribute');
+
+            if (!attributeName) {
+                throw new Error('[MixItUp] A valid `data-search-attribute` must be present on text inputs');
+            }
+
+            if (input.value.length < self.mixer.config.multifilter.minSearchLength) {
+                self.activeSelectors = [''];
+
+                return;
+            }
+
+            selector = '[' + attributeName + '*="' + input.value + '"]';
+        } else {
+            selector = input.value;
+        }
 
         if (input.value) {
-            self.activeSelectors = [input.value];
+            self.activeSelectors = [selector];
         }
     },
 

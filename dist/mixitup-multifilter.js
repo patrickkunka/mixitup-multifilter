@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.0.0-beta
  * A UI-builder for powerful multi-attribute filtering
- * Build 1706232d-8d3e-4c1c-917f-6b3bf53e555b
+ * Build ba31ef69-1a1c-46ed-b475-1815694e6b1f
  *
  * Requires mixitup.js >= v3.0.0
  *
@@ -138,6 +138,22 @@
 
             this.parseOn = 'change';
 
+            /**
+             * An integer dictating the duration in ms that must elapse between keyup
+             * events in order to trigger a change.
+             *
+             * Setting a comfortable delay of ~350ms prevents the mixer from being
+             * thrashed while typing occurs.
+             *
+             * @name        keyupThrottleDuration
+             * @memberof    mixitup.Config.multifilter
+             * @instance
+             * @type        {number}
+             * @default     350
+             */
+
+            this.keyupThrottleDuration = 350;
+
             h.seal(this);
         };
 
@@ -183,6 +199,7 @@
             this.mixer              = null;
             this.logic              = 'or';
             this.parseOn            = 'change';
+            this.keyupTimeout       = -1;
 
             h.seal(this);
         };
@@ -248,6 +265,7 @@
 
                 h.on(self.dom.el, 'click', self.handler);
                 h.on(self.dom.el, 'change', self.handler);
+                h.on(self.dom.el, 'keyup', self.handler);
 
                 if (self.dom.form) {
                     h.on(self.dom.form, 'reset', self.handler);
@@ -265,6 +283,7 @@
 
                 h.off(self.dom.el, 'click', self.handler);
                 h.off(self.dom.el, 'change', self.handler);
+                h.off(self.dom.el, 'keyup', self.handler);
 
                 if (self.dom.form) {
                     h.off(self.dom.form, 'reset', self.handler);
@@ -352,6 +371,24 @@
                 }
             },
 
+            handleKeyup: function(e) {
+                var self    = this,
+                    input   = e.target;
+
+                if (self.mixer.config.multifilter.parseOn !== 'change') {
+                    self.mixer.getSingleValue(input);
+
+                    return;
+                }
+
+                clearTimeout(self.keyupTimeout);
+
+                self.keyupTimeout = setTimeout(function() {
+                    self.getSingleValue(input);
+                    self.mixer.parseFilterGroups();
+                }, self.mixer.config.multifilter.keyupThrottleDuration);
+            },
+
             /**
              * @private
              * @param   {Event} e
@@ -407,10 +444,30 @@
              */
 
             getSingleValue: function(input) {
-                var self = this;
+                var self            = this,
+                    attributeName   = '',
+                    selector        = '';
+
+                if (input.type.match(/text|search/g)) {
+                    attributeName = input.getAttribute('data-search-attribute');
+
+                    if (!attributeName) {
+                        throw new Error('[MixItUp] A valid `data-search-attribute` must be present on text inputs');
+                    }
+
+                    if (input.value.length < self.mixer.config.multifilter.minSearchLength) {
+                        self.activeSelectors = [''];
+
+                        return;
+                    }
+
+                    selector = '[' + attributeName + '*="' + input.value + '"]';
+                } else {
+                    selector = input.value;
+                }
 
                 if (input.value) {
-                    self.activeSelectors = [input.value];
+                    self.activeSelectors = [selector];
                 }
             },
 

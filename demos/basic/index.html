@@ -54,9 +54,9 @@
                 <input type="radio" name="size" value=".small"/>
             </fieldset>
 
-            <!--<fieldset data-filter-group class="control-group">
-                <input type="text" placeholder="Search by name" data-search-attribute="name"/>
-            </fieldset>-->
+            <fieldset data-filter-group class="control-group">
+                <input type="text" placeholder="Search by name" data-search-attribute="data-name"/>
+            </fieldset>
 
             <button type="button" class="control" data-sort="default:asc">Asc</button>
             <button type="button" class="control" data-sort="default:desc">Desc</button>
@@ -92,6 +92,11 @@
                     logicBetweenGroups: 'and',
                     parseOn: 'change',
                     minSearchLength: 3
+                },
+                callbacks: {
+                    onMixStart: function(state, newState) {
+                        console.log(newState.activeFilter.selector);
+                    }
                 }
             });
         </script>
