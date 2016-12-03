@@ -1,0 +1,34 @@
+{{>banner}}
+
+(function(window) {
+    'use strict';
+
+    var mixitupMultifilter = function(mixitup) {
+        var h = mixitup.h;
+
+        {{>version-check}}
+
+        {{>config-multifilter}}
+
+        {{>config}}
+
+        {{>multifilter-form-event-tracker}}
+
+        {{>filter-group-dom}}
+
+        {{>filter-group}}
+
+        {{>mixer-dom}}
+
+        {{>mixer}}
+
+        {{>facade}}
+    };
+
+    mixitupMultifilter.TYPE                    = 'mixitup-extension';
+    mixitupMultifilter.NAME                    = '{{name}}';
+    mixitupMultifilter.EXTENSION_VERSION       = '{{version}}';
+    mixitupMultifilter.REQUIRE_CORE_VERSION    = '{{coreVersion}}';
+
+    {{>module-definitions}}
+})(window);
