@@ -58,7 +58,7 @@ mixitup.ConfigMultifilter = function() {
      * If set to `'or'`, targets will be shown if they match the active selectors
      * of any individual group.
      *
-     * @name        logicWithinGroup
+     * @name        logicBetweenGroups
      * @memberof    mixitup.Config.multifilter
      * @instance
      * @type        {string}
@@ -73,11 +73,11 @@ mixitup.ConfigMultifilter = function() {
      * short or incomplete words with many potential matches from triggering
      * filter operations.
      *
-     * @name        logicWithinGroup
+     * @name        minSearchLength
      * @memberof    mixitup.Config.multifilter
      * @instance
-     * @type        {string}
-     * @default     'and'
+     * @type        {number}
+     * @default     3
      */
 
     this.minSearchLength = 3;

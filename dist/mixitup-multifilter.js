@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.0.0-beta
  * A UI-builder for powerful multi-attribute filtering
- * Build 1c90a236-7265-42ff-802f-1aff41415e2b
+ * Build 1706232d-8d3e-4c1c-917f-6b3bf53e555b
  *
  * Requires mixitup.js >= v3.0.0
  *
@@ -91,7 +91,7 @@
              * If set to `'or'`, targets will be shown if they match the active selectors
              * of any individual group.
              *
-             * @name        logicWithinGroup
+             * @name        logicBetweenGroups
              * @memberof    mixitup.Config.multifilter
              * @instance
              * @type        {string}
@@ -106,11 +106,11 @@
              * short or incomplete words with many potential matches from triggering
              * filter operations.
              *
-             * @name        logicWithinGroup
+             * @name        minSearchLength
              * @memberof    mixitup.Config.multifilter
              * @instance
-             * @type        {string}
-             * @default     'and'
+             * @type        {number}
+             * @default     3
              */
 
             this.minSearchLength = 3;

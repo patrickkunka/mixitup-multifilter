@@ -52,7 +52,7 @@ all active filters in the group.
 |---  | ---
 |`string`| `'or'`
 
-### logicWithinGroup
+### logicBetweenGroups
 
 
 
@@ -71,7 +71,7 @@ of any individual group.
 |---  | ---
 |`string`| `'and'`
 
-### logicWithinGroup
+### minSearchLength
 
 
 
@@ -84,7 +84,7 @@ filter operations.
 
 |Type | Default
 |---  | ---
-|`string`| `'and'`
+|`number`| `3`
 
 ### parseOn
 
