@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.0.0-beta
  * A UI-builder for powerful multi-attribute filtering
- * Build 397fa23b-a65a-41e9-97d4-f7769d7f8fc4
+ * Build 1c90a236-7265-42ff-802f-1aff41415e2b
  *
  * Requires mixitup.js >= v3.0.0
  *
@@ -26,21 +26,135 @@
             !h.compareVersions(mixitupMultifilter.REQUIRE_CORE_VERSION, mixitup.CORE_VERSION)
         ) {
             throw new Error(
-                '[MixItUp-Multifilter] MixItUp Pagination v' +
+                '[MixItUp Multifilter] MixItUp Multifilter v' +
                 mixitupMultifilter.EXTENSION_VERSION +
                 ' requires at least MixItUp v' +
                 mixitupMultifilter.REQUIRE_CORE_VERSION
             );
         }
 
+        /**
+         * A group of properties defining the behavior of your multifilter UI.
+         *
+         * @constructor
+         * @memberof    mixitup.Config
+         * @name        multifilter
+         * @namespace
+         * @public
+         * @since       3.0.0
+         */
+
         mixitup.ConfigMultifilter = function() {
-            this.enable             = false;
-            this.logicWithinGroup   = 'or';
+
+            /**
+             * A boolean dictating whether or not to enable multifilter functionality.
+             *
+             * If `true`, MixItUp will query the DOM for any elements with a
+             * `data-filter-group` attribute present, which will then become the
+             * filtering UI for your mixer.
+             *
+             * @name        enable
+             * @memberof    mixitup.Config.multifilter
+             * @instance
+             * @type        {boolean}
+             * @default     false
+             */
+
+            this.enable = false;
+
+            /**
+             * A string dictating the logic to use when concatenating filter
+             * selectors within individual filter groups.
+             *
+             * If set to `'or'` (default), targets will be shown if they match against
+             * any active filter in the group.
+             *
+             * If set to `'and'`, targets will be shown only if they match
+             * all active filters in the group.
+             *
+             * @name        logicWithinGroup
+             * @memberof    mixitup.Config.multifilter
+             * @instance
+             * @type        {string}
+             * @default     'or'
+             */
+
+            this.logicWithinGroup = 'or';
+
+            /**
+             * A string dictating the logic to use when concatenating groups of
+             * filters together into the final filter selector.
+             *
+             * If set to `'and'` (default), targets will be shown only if they match
+             * the combined active selectors of all groups.
+             *
+             * If set to `'or'`, targets will be shown if they match the active selectors
+             * of any individual group.
+             *
+             * @name        logicWithinGroup
+             * @memberof    mixitup.Config.multifilter
+             * @instance
+             * @type        {string}
+             * @default     'and'
+             */
+
             this.logicBetweenGroups = 'and';
-            this.minSearchLength    = 3;
+
+            /**
+             * An integer dictating the minimum number of characters at which the value
+             * of a search or text input will be included as a multifilter. This prevents
+             * short or incomplete words with many potential matches from triggering
+             * filter operations.
+             *
+             * @name        logicWithinGroup
+             * @memberof    mixitup.Config.multifilter
+             * @instance
+             * @type        {string}
+             * @default     'and'
+             */
+
+            this.minSearchLength = 3;
+
+            /**
+             * A string dictating when the parsing of filter groups should occur.
+             *
+             * If set to `'change'` (default), the mixer will be filtered whenever the value of
+             * any filter is changed. The mode provides real-time filtering with instant feedback.
+             *
+             * If set to `'submit'`, the mixer will only be filtered when a submit button is clicked
+             * within your filter UI (if using a `<form>` element as a parent). This enables the user
+             * to firstly make their selection, and then "search" with a second interaction, without
+             * the mixer filtering in real-time.
+             *
+             * Additonally, the `mixer.parseFilterGroups()` method can be called via the API at any
+             * time to trigger the parsing of filter groups and filter the mixer.
+             *
+             * @name        parseOn
+             * @memberof    mixitup.Config.multifilter
+             * @instance
+             * @type        {string}
+             * @default     'change'
+             */
+
+            this.parseOn = 'change';
 
             h.seal(this);
         };
+
+        /**
+         * The MixItUp configuration object is extended with properties relating to
+         * the MultiFilter extension.
+         *
+         * For the full list of configuration options, please refer to the MixItUp
+         * core documentation.
+         *
+         * @constructor
+         * @memberof    mixitup
+         * @name        Config
+         * @namespace
+         * @public
+         * @since       2.0.0
+         */
 
         mixitup.Config.registerAction('beforeConstruct', 'multifilter', function() {
             this.multifilter = new mixitup.ConfigMultifilter();
@@ -74,6 +188,14 @@
         };
 
         h.extend(mixitup.FilterGroup.prototype, {
+
+            /**
+             * @private
+             * @param {HTMLELement}     el
+             * @param {mixitup.Mixer}   mixer
+             * @return {void}
+             */
+
             init: function(el, mixer) {
                 var self  = this,
                     logic = el.getAttribute('data-logic');
@@ -93,11 +215,21 @@
                 self.bindEvents();
             },
 
+            /**
+             * @private
+             * @return {void}
+             */
+
             cacheDom: function() {
                 var self = this;
 
                 self.dom.form = h.closestParent(self.dom.el, 'form');
             },
+
+            /**
+             * @private
+             * @return {void}
+             */
 
             bindEvents: function() {
                 var self = this;
@@ -123,6 +255,11 @@
                 }
             },
 
+            /**
+             * @private
+             * @return {void}
+             */
+
             unbindEvents: function() {
                 var self = this;
 
@@ -136,6 +273,12 @@
 
                 self.handler = null;
             },
+
+            /**
+             * @private
+             * @param   {MouseEvent} e
+             * @return  {void}
+             */
 
             handleClick: function(e) {
                 var self       = this,
@@ -172,9 +315,15 @@
                 self.updateControls();
 
                 if (self.mixer.config.multifilter.parseOn === 'change') {
-                    self.mixer.parseMultifilters();
+                    self.mixer.parseFilterGroups();
                 }
             },
+
+            /**
+             * @private
+             * @param   {Event} e
+             * @return  {void}
+             */
 
             handleChange: function(e) {
                 var self    = this,
@@ -199,15 +348,23 @@
                 }
 
                 if (self.mixer.config.multifilter.parseOn === 'change') {
-                    self.mixer.parseMultifilters();
+                    self.mixer.parseFilterGroups();
                 }
             },
+
+            /**
+             * @private
+             * @param   {Event} e
+             * @return  {void}
+             */
 
             handleFormEvent: function(e) {
                 var self            = this,
                     tracker         = null,
                     group           = null,
                     i               = -1;
+
+                e.preventDefault();
 
                 if (e.type === 'reset') {
                     self.activeToggles   = [];
@@ -236,12 +393,18 @@
                     if (tracker.totalHandled === tracker.totalBound) {
                         self.mixer.multifilterFormEventTracker = null;
 
-                        if (self.mixer.config.multifilter.parseOn === 'change') {
-                            self.mixer.parseMultifilters();
+                        if (e.type === 'submit' || self.mixer.config.multifilter.parseOn === 'change') {
+                            self.mixer.parseFilterGroups();
                         }
                     }
                 }
             },
+
+            /**
+             * @private
+             * @param   {HTMLELement} input
+             * @return  {void}
+             */
 
             getSingleValue: function(input) {
                 var self = this;
@@ -250,6 +413,12 @@
                     self.activeSelectors = [input.value];
                 }
             },
+
+            /**
+             * @private
+             * @param   {HTMLELement} input
+             * @return  {void}
+             */
 
             getMultipleValues: function(input) {
                 var self            = this,
@@ -285,6 +454,11 @@
                 self.activeSelectors = activeSelectors;
             },
 
+            /**
+             * @private
+             * @return  {void}
+             */
+
             updateControls: function() {
                 var self        = this,
                     controlsEls = self.dom.el.querySelectorAll('[data-filter], [data-toggle]'),
@@ -300,6 +474,13 @@
                     self.updateControl(controlEl, type);
                 }
             },
+
+            /**
+             * @private
+             * @param   {HTMLELement}   controlEl
+             * @param   {string}        type
+             * @return  {void}
+             */
 
             updateControl: function(controlEl, type) {
                 var self            = this,
@@ -319,6 +500,21 @@
         mixitup.MixerDom.registerAction('afterConstruct', 'multifilter', function() {
             this.filterGroups = [];
         });
+
+        /**
+         * The `mixitup.Mixer` class is extended with API methods relating to
+         * the MultiFilter extension.
+         *
+         * For the full list of API methods, please refer to the MixItUp
+         * core documentation.
+         *
+         * @constructor
+         * @namespace
+         * @name        Mixer
+         * @memberof    mixitup
+         * @public
+         * @since       3.0.0
+         */
 
         mixitup.Mixer.registerAction('afterConstruct', 'multifilter', function() {
             this.filterGroups               = [];
@@ -380,9 +576,24 @@
             }
         });
 
+        mixitup.Mixer.registerAction('beforeDestory', 'multifilter', function() {
+            var self    = this,
+                group   = null,
+                i       = -1;
+
+            for (i = 0; group = self.filterGroups[i]; i++) {
+                group.unbindEvents();
+            }
+        });
+
         mixitup.Mixer.extend(
         /** @lends mixitup.Mixer */
         {
+            /**
+             * @private
+             * @return {void}
+             */
+
             indexFilterGroups: function() {
                 var self          = this,
                     filterGroup   = null,
@@ -398,8 +609,73 @@
                 }
             },
 
+            /**
+             * @private
+             * @instance
+             * @since   2.0.0
+             * @param   {Array<*>}  args
+             * @return  {mixitup.UserInstruction}
+             */
+
+            parseParseFilterGroupsArgs: function(args) {
+                var self        = this,
+                    instruction = new mixitup.UserInstruction(),
+                    arg         = null,
+                    i           = -1;
+
+                instruction.animate = self.config.animation.enable;
+                instruction.command = new mixitup.CommandFilter();
+
+                for (i = 0; i < args.length; i++) {
+                    arg = args[i];
+
+                    if (typeof arg === 'boolean') {
+                        instruction.animate = arg;
+                    } else if (typeof arg === 'function') {
+                        instruction.callback = arg;
+                    }
+                }
+
+                h.freeze(instruction);
+
+                return instruction;
+            },
+
+            /**
+             * Traverses currently active filters in all groups, building up a
+             * compound selector string as per the defined logic. A filter operation
+             * is then called on the mixer using the selector.
+             *
+             * This method can be used to programmatically trigger the parsing of
+             * filter groups after a manipulation of active filters which would not
+             * trigger a `change` automatically.
+             *
+             * @example
+             *
+             * .parseFilterGroups([animate] [, callback])
+             *
+             * @example <caption>Example: Triggering parsing after manually selecting all checkboxes in a group</caption>
+             *
+             * var checkboxes = Array.from(document.querySelectorAll('.my-group > input[type="checkbox"]'));
+             *
+             * checkboxes.forEach(function(checkbox) {
+             *     checkbox.checked = true;
+             * });
+             *
+             * mixer.parseFilterGroups();
+             *
+             * @public
+             * @param       {boolean}   [animate=true]
+             *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+             * @param       {function}  [callback=null]
+             *      An optional callback function to be invoked after the operation has completed.
+             * @return      {Promise.<mixitup.State>}
+             *      A promise resolving with the current state object.
+             */
+
             parseFilterGroups: function() {
                 var self        = this,
+                    instruction = self.parseFilterArgs(arguments),
                     paths       = self.getFilterGroupPaths(),
                     selector    = self.buildSelectorFromPaths(paths);
 
@@ -407,8 +683,20 @@
                     selector = self.config.controls.toggleDefault;
                 }
 
-                return self.filter(selector);
+                instruction.command.selector = selector;
+
+                return self.multimix({
+                    filter: instruction.command
+                }, instruction.animate, instruction.callback);
             },
+
+            /**
+             * Recursively builds up paths between all possible permutations
+             * of filter group nodes according to the defined logic.
+             *
+             * @private
+             * @return {Array.<Array.<string>>}
+             */
 
             getFilterGroupPaths: function() {
                 var self       = this,
@@ -482,6 +770,14 @@
 
                 return paths;
             },
+
+            /**
+             * Builds up a selector string from a provided paths array.
+             *
+             * @private
+             * @param  {Array.<Array.<string>>} paths
+             * @return {string}
+             */
 
             buildSelectorFromPaths: function(paths) {
                 var self           = this,

@@ -1,5 +1,20 @@
 /* global mixitup, h */
 
+/**
+ * The `mixitup.Mixer` class is extended with API methods relating to
+ * the MultiFilter extension.
+ *
+ * For the full list of API methods, please refer to the MixItUp
+ * core documentation.
+ *
+ * @constructor
+ * @namespace
+ * @name        Mixer
+ * @memberof    mixitup
+ * @public
+ * @since       3.0.0
+ */
+
 mixitup.Mixer.registerAction('afterConstruct', 'multifilter', function() {
     this.filterGroups               = [];
     this.multifilterFormEventTracker    = null;
@@ -60,9 +75,24 @@ mixitup.Mixer.registerAction('afterUpdateControls', 'multifilter', function() {
     }
 });
 
+mixitup.Mixer.registerAction('beforeDestory', 'multifilter', function() {
+    var self    = this,
+        group   = null,
+        i       = -1;
+
+    for (i = 0; group = self.filterGroups[i]; i++) {
+        group.unbindEvents();
+    }
+});
+
 mixitup.Mixer.extend(
 /** @lends mixitup.Mixer */
 {
+    /**
+     * @private
+     * @return {void}
+     */
+
     indexFilterGroups: function() {
         var self          = this,
             filterGroup   = null,
@@ -78,8 +108,73 @@ mixitup.Mixer.extend(
         }
     },
 
+    /**
+     * @private
+     * @instance
+     * @since   2.0.0
+     * @param   {Array<*>}  args
+     * @return  {mixitup.UserInstruction}
+     */
+
+    parseParseFilterGroupsArgs: function(args) {
+        var self        = this,
+            instruction = new mixitup.UserInstruction(),
+            arg         = null,
+            i           = -1;
+
+        instruction.animate = self.config.animation.enable;
+        instruction.command = new mixitup.CommandFilter();
+
+        for (i = 0; i < args.length; i++) {
+            arg = args[i];
+
+            if (typeof arg === 'boolean') {
+                instruction.animate = arg;
+            } else if (typeof arg === 'function') {
+                instruction.callback = arg;
+            }
+        }
+
+        h.freeze(instruction);
+
+        return instruction;
+    },
+
+    /**
+     * Traverses currently active filters in all groups, building up a
+     * compound selector string as per the defined logic. A filter operation
+     * is then called on the mixer using the selector.
+     *
+     * This method can be used to programmatically trigger the parsing of
+     * filter groups after a manipulation of active filters which would not
+     * trigger a `change` automatically.
+     *
+     * @example
+     *
+     * .parseFilterGroups([animate] [, callback])
+     *
+     * @example <caption>Example: Triggering parsing after manually selecting all checkboxes in a group</caption>
+     *
+     * var checkboxes = Array.from(document.querySelectorAll('.my-group > input[type="checkbox"]'));
+     *
+     * checkboxes.forEach(function(checkbox) {
+     *     checkbox.checked = true;
+     * });
+     *
+     * mixer.parseFilterGroups();
+     *
+     * @public
+     * @param       {boolean}   [animate=true]
+     *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+     * @param       {function}  [callback=null]
+     *      An optional callback function to be invoked after the operation has completed.
+     * @return      {Promise.<mixitup.State>}
+     *      A promise resolving with the current state object.
+     */
+
     parseFilterGroups: function() {
         var self        = this,
+            instruction = self.parseFilterArgs(arguments),
             paths       = self.getFilterGroupPaths(),
             selector    = self.buildSelectorFromPaths(paths);
 
@@ -87,8 +182,20 @@ mixitup.Mixer.extend(
             selector = self.config.controls.toggleDefault;
         }
 
-        return self.filter(selector);
+        instruction.command.selector = selector;
+
+        return self.multimix({
+            filter: instruction.command
+        }, instruction.animate, instruction.callback);
     },
+
+    /**
+     * Recursively builds up paths between all possible permutations
+     * of filter group nodes according to the defined logic.
+     *
+     * @private
+     * @return {Array.<Array.<string>>}
+     */
 
     getFilterGroupPaths: function() {
         var self       = this,
@@ -162,6 +269,14 @@ mixitup.Mixer.extend(
 
         return paths;
     },
+
+    /**
+     * Builds up a selector string from a provided paths array.
+     *
+     * @private
+     * @param  {Array.<Array.<string>>} paths
+     * @return {string}
+     */
 
     buildSelectorFromPaths: function(paths) {
         var self           = this,

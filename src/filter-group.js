@@ -13,6 +13,14 @@ mixitup.FilterGroup = function() {
 };
 
 h.extend(mixitup.FilterGroup.prototype, {
+
+    /**
+     * @private
+     * @param {HTMLELement}     el
+     * @param {mixitup.Mixer}   mixer
+     * @return {void}
+     */
+
     init: function(el, mixer) {
         var self  = this,
             logic = el.getAttribute('data-logic');
@@ -32,11 +40,21 @@ h.extend(mixitup.FilterGroup.prototype, {
         self.bindEvents();
     },
 
+    /**
+     * @private
+     * @return {void}
+     */
+
     cacheDom: function() {
         var self = this;
 
         self.dom.form = h.closestParent(self.dom.el, 'form');
     },
+
+    /**
+     * @private
+     * @return {void}
+     */
 
     bindEvents: function() {
         var self = this;
@@ -62,6 +80,11 @@ h.extend(mixitup.FilterGroup.prototype, {
         }
     },
 
+    /**
+     * @private
+     * @return {void}
+     */
+
     unbindEvents: function() {
         var self = this;
 
@@ -75,6 +98,12 @@ h.extend(mixitup.FilterGroup.prototype, {
 
         self.handler = null;
     },
+
+    /**
+     * @private
+     * @param   {MouseEvent} e
+     * @return  {void}
+     */
 
     handleClick: function(e) {
         var self       = this,
@@ -111,9 +140,15 @@ h.extend(mixitup.FilterGroup.prototype, {
         self.updateControls();
 
         if (self.mixer.config.multifilter.parseOn === 'change') {
-            self.mixer.parseMultifilters();
+            self.mixer.parseFilterGroups();
         }
     },
+
+    /**
+     * @private
+     * @param   {Event} e
+     * @return  {void}
+     */
 
     handleChange: function(e) {
         var self    = this,
@@ -138,15 +173,23 @@ h.extend(mixitup.FilterGroup.prototype, {
         }
 
         if (self.mixer.config.multifilter.parseOn === 'change') {
-            self.mixer.parseMultifilters();
+            self.mixer.parseFilterGroups();
         }
     },
+
+    /**
+     * @private
+     * @param   {Event} e
+     * @return  {void}
+     */
 
     handleFormEvent: function(e) {
         var self            = this,
             tracker         = null,
             group           = null,
             i               = -1;
+
+        e.preventDefault();
 
         if (e.type === 'reset') {
             self.activeToggles   = [];
@@ -175,12 +218,18 @@ h.extend(mixitup.FilterGroup.prototype, {
             if (tracker.totalHandled === tracker.totalBound) {
                 self.mixer.multifilterFormEventTracker = null;
 
-                if (self.mixer.config.multifilter.parseOn === 'change') {
-                    self.mixer.parseMultifilters();
+                if (e.type === 'submit' || self.mixer.config.multifilter.parseOn === 'change') {
+                    self.mixer.parseFilterGroups();
                 }
             }
         }
     },
+
+    /**
+     * @private
+     * @param   {HTMLELement} input
+     * @return  {void}
+     */
 
     getSingleValue: function(input) {
         var self = this;
@@ -189,6 +238,12 @@ h.extend(mixitup.FilterGroup.prototype, {
             self.activeSelectors = [input.value];
         }
     },
+
+    /**
+     * @private
+     * @param   {HTMLELement} input
+     * @return  {void}
+     */
 
     getMultipleValues: function(input) {
         var self            = this,
@@ -224,6 +279,11 @@ h.extend(mixitup.FilterGroup.prototype, {
         self.activeSelectors = activeSelectors;
     },
 
+    /**
+     * @private
+     * @return  {void}
+     */
+
     updateControls: function() {
         var self        = this,
             controlsEls = self.dom.el.querySelectorAll('[data-filter], [data-toggle]'),
@@ -239,6 +299,13 @@ h.extend(mixitup.FilterGroup.prototype, {
             self.updateControl(controlEl, type);
         }
     },
+
+    /**
+     * @private
+     * @param   {HTMLELement}   controlEl
+     * @param   {string}        type
+     * @return  {void}
+     */
 
     updateControl: function(controlEl, type) {
         var self            = this,
