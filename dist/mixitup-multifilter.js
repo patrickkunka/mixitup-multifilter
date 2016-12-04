@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.0.0-beta
- * A UI-builder for powerful multi-attribute filtering
- * Build ba31ef69-1a1c-46ed-b475-1815694e6b1f
+ * A UI-builder for powerful multi-criteria filtering
+ * Build f3a5c444-0533-4974-a794-3bc12a6c9481
  *
  * Requires mixitup.js >= v3.0.0
  *
@@ -50,8 +50,7 @@
              * A boolean dictating whether or not to enable multifilter functionality.
              *
              * If `true`, MixItUp will query the DOM for any elements with a
-             * `data-filter-group` attribute present, which will then become the
-             * filtering UI for your mixer.
+             * `data-filter-group` attribute present on instantiation.
              *
              * @name        enable
              * @memberof    mixitup.Config.multifilter
@@ -63,11 +62,11 @@
             this.enable = false;
 
             /**
-             * A string dictating the logic to use when concatenating filter
-             * selectors within individual filter groups.
+             * A string dictating the logic to use when concatenating selectors within
+             * individual filter groups.
              *
-             * If set to `'or'` (default), targets will be shown if they match against
-             * any active filter in the group.
+             * If set to `'or'` (default), targets will be shown if they match any
+             * active filter in the group.
              *
              * If set to `'and'`, targets will be shown only if they match
              * all active filters in the group.
@@ -82,8 +81,8 @@
             this.logicWithinGroup = 'or';
 
             /**
-             * A string dictating the logic to use when concatenating groups of
-             * filters together into the final filter selector.
+             * A string dictating the logic to use when concatenating each group's
+             * selectors into one single selector.
              *
              * If set to `'and'` (default), targets will be shown only if they match
              * the combined active selectors of all groups.
@@ -102,8 +101,8 @@
 
             /**
              * An integer dictating the minimum number of characters at which the value
-             * of a search or text input will be included as a multifilter. This prevents
-             * short or incomplete words with many potential matches from triggering
+             * of a text input will be included as a multifilter. This prevents short or
+             * incomplete words with many potential matches from triggering
              * filter operations.
              *
              * @name        minSearchLength
@@ -118,15 +117,16 @@
             /**
              * A string dictating when the parsing of filter groups should occur.
              *
-             * If set to `'change'` (default), the mixer will be filtered whenever the value of
-             * any filter is changed. The mode provides real-time filtering with instant feedback.
+             * If set to `'change'` (default), the mixer will be filtered whenever the
+             * filtering UI is interacted with. The mode provides real-time filtering with
+             * instant feedback.
              *
-             * If set to `'submit'`, the mixer will only be filtered when a submit button is clicked
-             * within your filter UI (if using a `<form>` element as a parent). This enables the user
-             * to firstly make their selection, and then "search" with a second interaction, without
-             * the mixer filtering in real-time.
+             * If set to `'submit'`, the mixer will only be filtered when a submit button is
+             * clicked (if using a `<form>` element as a parent). This enables the user to firstly
+             * make their selection, and then trigger filtering once they have
+             * finished making their selection.
              *
-             * Additonally, the `mixer.parseFilterGroups()` method can be called via the API at any
+             * Alternatively, the `mixer.parseFilterGroups()` method can be called via the API at any
              * time to trigger the parsing of filter groups and filter the mixer.
              *
              * @name        parseOn
@@ -448,7 +448,7 @@
                     attributeName   = '',
                     selector        = '';
 
-                if (input.type.match(/text|search/g)) {
+                if (input.type.match(/text|search|password/g)) {
                     attributeName = input.getAttribute('data-search-attribute');
 
                     if (!attributeName) {
@@ -699,12 +699,12 @@
             },
 
             /**
-             * Traverses currently active filters in all groups, building up a
+             * Traverses the currently active filters in all groups, building up a
              * compound selector string as per the defined logic. A filter operation
-             * is then called on the mixer using the selector.
+             * is then called on the mixer using the generated selector.
              *
              * This method can be used to programmatically trigger the parsing of
-             * filter groups after a manipulation of active filters which would not
+             * filter groups after manipulations to the UI which would not otherwise
              * trigger a `change` automatically.
              *
              * @example

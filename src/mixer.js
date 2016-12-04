@@ -141,12 +141,12 @@ mixitup.Mixer.extend(
     },
 
     /**
-     * Traverses currently active filters in all groups, building up a
+     * Traverses the currently active filters in all groups, building up a
      * compound selector string as per the defined logic. A filter operation
-     * is then called on the mixer using the selector.
+     * is then called on the mixer using the generated selector.
      *
      * This method can be used to programmatically trigger the parsing of
-     * filter groups after a manipulation of active filters which would not
+     * filter groups after manipulations to the UI which would not otherwise
      * trigger a `change` automatically.
      *
      * @example

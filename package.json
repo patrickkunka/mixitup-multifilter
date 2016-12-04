@@ -2,7 +2,7 @@
   "name": "mixitup-multifilter",
   "title": "MixItUp MultiFilter",
   "version": "3.0.0-beta",
-  "description": "A UI-builder for powerful multi-attribute filtering",
+  "description": "A UI-builder for powerful multi-criteria filtering",
   "author": "KunkaLabs Limited",
   "homepage": "https://www.kunkalabs.com/mixitup-multifilter/",
   "license" : "SEE LICENSE IN license.md",
