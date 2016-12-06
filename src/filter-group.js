@@ -49,7 +49,7 @@ h.extend(mixitup.FilterGroup.prototype, {
     cacheDom: function() {
         var self = this;
 
-        self.dom.form = h.closestParent(self.dom.el, 'form');
+        self.dom.form = h.closestParent(self.dom.el, 'form', true);
     },
 
     /**

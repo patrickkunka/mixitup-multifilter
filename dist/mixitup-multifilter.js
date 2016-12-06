@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.0.0-beta
  * A UI-builder for powerful multi-criteria filtering
- * Build f3a5c444-0533-4974-a794-3bc12a6c9481
+ * Build d10643b2-2676-4b35-b11d-4565de849df3
  *
  * Requires mixitup.js >= v3.0.0
  *
@@ -240,7 +240,7 @@
             cacheDom: function() {
                 var self = this;
 
-                self.dom.form = h.closestParent(self.dom.el, 'form');
+                self.dom.form = h.closestParent(self.dom.el, 'form', true);
             },
 
             /**
