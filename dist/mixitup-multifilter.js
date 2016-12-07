@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.0.0-beta
  * A UI-builder for powerful multi-criteria filtering
- * Build d10643b2-2676-4b35-b11d-4565de849df3
+ * Build 5161291b-55fc-4b89-89ce-69ab322ceaf4
  *
  * Requires mixitup.js >= v3.0.0
  *
@@ -221,6 +221,10 @@
 
                 self.cacheDom();
 
+                if (self.dom.form) {
+                    self.enableButtons();
+                }
+
                 self.mixer = mixer;
 
                 if ((logic && logic.toLowerCase() === 'and') || mixer.config.multifilter.logicWithinGroup === 'and') {
@@ -241,6 +245,19 @@
                 var self = this;
 
                 self.dom.form = h.closestParent(self.dom.el, 'form', true);
+            },
+
+            enableButtons: function() {
+                var self    = this,
+                    buttons = self.dom.form.querySelectorAll('button[type="submit"]:disabled'),
+                    button  = null,
+                    i       = -1;
+
+                for (i = 0; button = buttons[i]; i++) {
+                    if (button.disabled) {
+                        button.disabled = false;
+                    }
+                }
             },
 
             /**

@@ -30,6 +30,10 @@ h.extend(mixitup.FilterGroup.prototype, {
 
         self.cacheDom();
 
+        if (self.dom.form) {
+            self.enableButtons();
+        }
+
         self.mixer = mixer;
 
         if ((logic && logic.toLowerCase() === 'and') || mixer.config.multifilter.logicWithinGroup === 'and') {
@@ -50,6 +54,19 @@ h.extend(mixitup.FilterGroup.prototype, {
         var self = this;
 
         self.dom.form = h.closestParent(self.dom.el, 'form', true);
+    },
+
+    enableButtons: function() {
+        var self    = this,
+            buttons = self.dom.form.querySelectorAll('button[type="submit"]:disabled'),
+            button  = null,
+            i       = -1;
+
+        for (i = 0; button = buttons[i]; i++) {
+            if (button.disabled) {
+                button.disabled = false;
+            }
+        }
     },
 
     /**
