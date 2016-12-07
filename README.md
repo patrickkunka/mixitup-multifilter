@@ -106,7 +106,7 @@ MixItUp MultiFilter allows us to combine filter selectors within each of these d
 
 Filter groups are an essential part of a multifilter-enabled mixer and are defined in your markup. Each group represents a particular dimension, and can contain a many different types of UI within it. Filter groups are queried by MixItUp based on the presence of a `data-filter-group` attribute. You may use any outer element as a filter group, but `<fieldset>` makes sense semantically, particularly when using inputs like checkboxes or radios within it.
 
-You can think of your entire multifilter UI as a <form> with which to interact with your mixer.
+You can think of your entire multifilter UI as a `<form>` with which to interact with your mixer.
 
 ```html
 <form>
@@ -124,7 +124,7 @@ You can think of your entire multifilter UI as a <form> with which to interact w
 </form>
 ```
 
-*Wrapping filter groups in a parent <form> is optional, but provides the ability to use submit and reset buttons as part of your UI.*
+*Wrapping filter groups in a parent `<form>` is optional, but provides the ability to use submit and reset buttons as part of your UI.*
 
 In the example above, **filter control** buttons are used in the first group, and *toggle control* buttons are used in the second group. To recap the [Filtering with MixItUp](https://www.kunkalabs.com/tutorials/filtering-with-mixitup/) tutorial, filter controls allow one active control at a time, and toggle controls allow multiple active controls simultaneously. This behavior is also true when using filter groups, but is confined to within the group. Therefore, the UI above would allow us to select one type of clothing, but multiple colors.
 
