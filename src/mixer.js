@@ -54,7 +54,7 @@ mixitup.Mixer.registerAction('afterSanitizeConfig', 'multifilter', function() {
     var self = this;
 
     self.config.multifilter.logicBetweenGroups = self.config.multifilter.logicBetweenGroups.toLowerCase().trim();
-    self.config.multifilter.logicWithinGroups = self.config.multifilter.logicWithinGroups.toLowerCase().trim();
+    self.config.multifilter.logicWithinGroup = self.config.multifilter.logicWithinGroup.toLowerCase().trim();
 });
 
 mixitup.Mixer.registerAction('afterAttach', 'multifilter', function() {

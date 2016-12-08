@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.0.0-beta
  * A UI-builder for powerful multi-criteria filtering
- * Build 5161291b-55fc-4b89-89ce-69ab322ceaf4
+ * Build 0260bab3-9409-40f6-a6ca-6e8aa5fcdacd
  *
  * Requires mixitup.js >= v3.0.0
  *
@@ -629,7 +629,7 @@
             var self = this;
 
             self.config.multifilter.logicBetweenGroups = self.config.multifilter.logicBetweenGroups.toLowerCase().trim();
-            self.config.multifilter.logicWithinGroups = self.config.multifilter.logicWithinGroups.toLowerCase().trim();
+            self.config.multifilter.logicWithinGroup = self.config.multifilter.logicWithinGroup.toLowerCase().trim();
         });
 
         mixitup.Mixer.registerAction('afterAttach', 'multifilter', function() {
