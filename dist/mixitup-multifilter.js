@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.0.0-beta
  * A UI-builder for powerful multi-criteria filtering
- * Build 0260bab3-9409-40f6-a6ca-6e8aa5fcdacd
+ * Build b736311d-4e03-4955-8058-eb6e9f9fa545
  *
  * Requires mixitup.js >= v3.0.0
  *
@@ -887,7 +887,7 @@
             }
         });
 
-        mixitup.Facade.registerAction('afterConstruct', 'pagination', function(mixer) {
+        mixitup.Facade.registerAction('afterConstruct', 'multifilter', function(mixer) {
             this.parseFilterGroups = mixer.parseFilterGroups.bind(mixer);
         });    };
 
