@@ -1,6 +1,6 @@
 # MixItUp MultiFilter
 
-MixItUp MultiFilter is a premium extension for MixItUp 3 and makes building multi-dimensional filtering UI effortless.
+MixItUp MultiFilter is a premium extension for MixItUp 3 and makes building multidimensional filtering UI effortless.
 
 ### Features
 
@@ -19,7 +19,7 @@ MixItUp MultiFilter is a premium extension for MixItUp 3 and makes building mult
 
 - Client-side only - the entire target collection must exist in the DOM
 
-*NB: If you're looking to integrate server-side ajax multi-dimensional with MixItUp, consider using MixItUp 3's Dataset API.*
+*NB: If you're looking to integrate server-side ajax multidimensional with MixItUp, consider using MixItUp 3's Dataset API.*
 
 ## Get Started
 
