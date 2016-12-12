@@ -6,34 +6,67 @@
         <link href="../reset.css" rel="stylesheet"/>
         <link href="./style.css" rel="stylesheet"/>
 
-        <title>MixItUp MultiFilter Demo - Buttons</title>
+        <title>MixItUp MultiFilter Demo - Radios</title>
     </head>
     <body>
         <form class="controls">
             <button type="reset" class="control control-text">Reset</button>
 
-            <fieldset data-filter-group class="control-group">
-                <label class="control-group-label">Color</label>
+            <fieldset data-filter-group class="radio-group">
+                <label class="radio-group-label">Color</label>
 
-                <button type="button" class="control control-color" data-toggle=".green">Green</button>
-                <button type="button" class="control control-color" data-toggle=".blue">Blue</button>
-                <button type="button" class="control control-color" data-toggle=".pink">Pink</button>
+                <div class="radio">
+                    <label class="radio-label">Green</label>
+                    <input type="radio" name="color" value=".green"/>
+                </div>
+
+                <div class="radio">
+                    <label class="radio-label">Blue</label>
+                    <input type="radio" name="color" value=".blue"/>
+                </div>
+
+                <div class="radio">
+                    <label class="radio-label">Pink</label>
+                    <input type="radio" name="color" value=".pink"/>
+                </div>
             </fieldset>
 
-            <fieldset data-filter-group class="control-group">
-                <label class="control-group-label">Shape</label>
+            <fieldset data-filter-group class="radio-group">
+                <label class="radio-group-label">Shape</label>
 
-                <button type="button" class="control control-shape" data-toggle=".square">Square</button>
-                <button type="button" class="control control-shape" data-toggle=".circle">Circle</button>
-                <button type="button" class="control control-shape" data-toggle=".triangle">Triangle</button>
+                <div class="radio">
+                    <label class="radio-label">Square</label>
+                    <input type="radio" name="shape" value=".square"/>
+                </div>
+
+                <div class="radio">
+                    <label class="radio-label">Circle</label>
+                    <input type="radio" name="shape" value=".circle"/>
+                </div>
+
+                <div class="radio">
+                    <label class="radio-label">Triangle</label>
+                    <input type="radio" name="shape" value=".triangle"/>
+                </div>
             </fieldset>
 
-            <fieldset data-filter-group class="control-group">
-                <label class="control-group-label">Size</label>
+            <fieldset data-filter-group class="radio-group">
+                <label class="radio-group-label">Size</label>
 
-                <button type="button" class="control control-size" data-toggle=".small">Small</button>
-                <button type="button" class="control control-size" data-toggle=".medium">Medium</button>
-                <button type="button" class="control control-size" data-toggle=".large">Large</button>
+                <div class="radio">
+                    <label class="radio-label">Small</label>
+                    <input type="radio" name="size" value=".small"/>
+                </div>
+
+                <div class="radio">
+                    <label class="radio-label">Medium</label>
+                    <input type="radio" name="size" value=".medium"/>
+                </div>
+
+                <div class="radio">
+                    <label class="radio-label">Large</label>
+                    <input type="radio" name="size" value=".large"/>
+                </div>
             </fieldset>
 
             <div class="control-group">

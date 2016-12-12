@@ -1,7 +1,7 @@
 {
   "name": "mixitup-multifilter",
   "title": "MixItUp MultiFilter",
-  "version": "3.0.0-beta",
+  "version": "3.0.1",
   "description": "A UI-builder for powerful multidimensional filtering",
   "author": "KunkaLabs Limited",
   "homepage": "https://www.kunkalabs.com/mixitup-multifilter/",
@@ -9,7 +9,7 @@
   "private": true,
   "main": "./dist/mixitup-multifilter.js",
   "dependencies": {
-      "mixitup": "3.0.0"
+      "mixitup": "^3.0.0"
   },
   "devDependencies": {
     "gulp": "^3.8.8",

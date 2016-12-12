@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp MultiFilter Demo - Selects</title>
+    </head>
+    <body>
+        <form class="controls">
+            <button type="reset" class="control control-text">Reset</button>
+
+            <fieldset data-filter-group class="select-wrapper">
+                <select>
+                    <option value="">Color</option>
+                    <option value=".green">Green</option>
+                    <option value=".blue">Blue</option>
+                    <option value=".pink">Pink</option>
+                </select>
+            </fieldset>
+
+            <fieldset data-filter-group class="select-wrapper">
+                <select>
+                    <option value="">Shape</option>
+                    <option value=".square">Square</option>
+                    <option value=".circle">Circle</option>
+                    <option value=".triangle">Triangle</option>
+                </select>
+            </fieldset>
+
+            <fieldset data-filter-group class="select-wrapper">
+                <select>
+                    <option value="">Size</option>
+                    <option value=".small">Small</option>
+                    <option value=".medium">Medium</option>
+                    <option value=".large">Large</option>
+                </select>
+            </fieldset>
+
+            <div class="control-group">
+                <button type="button" class="control control-sort" data-sort="default:asc">Asc</button>
+                <button type="button" class="control control-sort" data-sort="default:desc">Desc</button>
+            </div>
+        </form>
+
+        <div class="container">
+            <div class="mix green small square"></div>
+            <div class="mix green medium square"></div>
+            <div class="mix blue large triangle"></div>
+            <div class="mix pink large circle"></div>
+            <div class="mix green small circle"></div>
+            <div class="mix blue medium triangle"></div>
+            <div class="mix pink medium square"></div>
+            <div class="mix blue medium triangle"></div>
+            <div class="mix pink small circle"></div>
+            <div class="mix green large triangle"></div>
+            <div class="mix blue small square"></div>
+            <div class="mix pink small square"></div>
+            <div class="mix green large square"></div>
+            <div class="mix blue large circle"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+        <script src="../../dist/mixitup-multifilter.js"></script>
+
+        <script>
+            var containerEl = document.querySelector('.container');
+
+            var mixer = mixitup(containerEl, {
+                multifilter: {
+                    enable: true
+                },
+                animation: {
+                    effects: 'fade translateZ(-100px)'
+                }
+            });
+        </script>
+    </body>
+</html>

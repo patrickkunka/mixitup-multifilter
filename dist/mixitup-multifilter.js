@@ -1,7 +1,7 @@
 /**!
- * MixItUp MultiFilter v3.0.0-beta
+ * MixItUp MultiFilter v3.0.1
  * A UI-builder for powerful multidimensional filtering
- * Build 9f7c7cbc-b508-4488-843e-51c24fa03495
+ * Build c547994d-1483-4c6c-9ff9-c0bac444da9a
  *
  * Requires mixitup.js >= v3.0.0
  *
@@ -418,7 +418,9 @@
                     group           = null,
                     i               = -1;
 
-                e.preventDefault();
+                if (e.type === 'submit') {
+                    e.preventDefault();
+                }
 
                 if (e.type === 'reset') {
                     self.activeToggles   = [];
@@ -650,7 +652,7 @@
             }
         });
 
-        mixitup.Mixer.registerAction('beforeDestory', 'multifilter', function() {
+        mixitup.Mixer.registerAction('beforeDestroy', 'multifilter', function() {
             var self    = this,
                 group   = null,
                 i       = -1;
@@ -893,7 +895,7 @@
 
     mixitupMultifilter.TYPE                    = 'mixitup-extension';
     mixitupMultifilter.NAME                    = 'mixitup-multifilter';
-    mixitupMultifilter.EXTENSION_VERSION       = '3.0.0-beta';
+    mixitupMultifilter.EXTENSION_VERSION       = '3.0.1';
     mixitupMultifilter.REQUIRE_CORE_VERSION    = '3.0.0';
 
     if (typeof exports === 'object' && typeof module === 'object') {

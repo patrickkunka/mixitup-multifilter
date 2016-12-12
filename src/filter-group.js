@@ -227,7 +227,9 @@ h.extend(mixitup.FilterGroup.prototype, {
             group           = null,
             i               = -1;
 
-        e.preventDefault();
+        if (e.type === 'submit') {
+            e.preventDefault();
+        }
 
         if (e.type === 'reset') {
             self.activeToggles   = [];

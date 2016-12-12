@@ -75,7 +75,7 @@ mixitup.Mixer.registerAction('afterUpdateControls', 'multifilter', function() {
     }
 });
 
-mixitup.Mixer.registerAction('beforeDestory', 'multifilter', function() {
+mixitup.Mixer.registerAction('beforeDestroy', 'multifilter', function() {
     var self    = this,
         group   = null,
         i       = -1;

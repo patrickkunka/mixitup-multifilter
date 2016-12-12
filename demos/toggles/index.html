@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp MultiFilter Demo - Toggle Controls</title>
+    </head>
+    <body>
+        <form class="controls">
+            <button type="reset" class="control control-text">Reset</button>
+
+            <fieldset data-filter-group class="control-group">
+                <label class="control-group-label">Color</label>
+
+                <button type="button" class="control control-color" data-toggle=".green">Green</button>
+                <button type="button" class="control control-color" data-toggle=".blue">Blue</button>
+                <button type="button" class="control control-color" data-toggle=".pink">Pink</button>
+            </fieldset>
+
+            <fieldset data-filter-group class="control-group">
+                <label class="control-group-label">Shape</label>
+
+                <button type="button" class="control control-shape" data-toggle=".square">Square</button>
+                <button type="button" class="control control-shape" data-toggle=".circle">Circle</button>
+                <button type="button" class="control control-shape" data-toggle=".triangle">Triangle</button>
+            </fieldset>
+
+            <fieldset data-filter-group class="control-group">
+                <label class="control-group-label">Size</label>
+
+                <button type="button" class="control control-size" data-toggle=".small">Small</button>
+                <button type="button" class="control control-size" data-toggle=".medium">Medium</button>
+                <button type="button" class="control control-size" data-toggle=".large">Large</button>
+            </fieldset>
+
+            <div class="control-group">
+                <button type="button" class="control control-sort" data-sort="default:asc">Asc</button>
+                <button type="button" class="control control-sort" data-sort="default:desc">Desc</button>
+            </div>
+        </form>
+
+        <div class="container">
+            <div class="mix green small square"></div>
+            <div class="mix green medium square"></div>
+            <div class="mix blue large triangle"></div>
+            <div class="mix pink large circle"></div>
+            <div class="mix green small circle"></div>
+            <div class="mix blue medium triangle"></div>
+            <div class="mix pink medium square"></div>
+            <div class="mix blue medium triangle"></div>
+            <div class="mix pink small circle"></div>
+            <div class="mix green large triangle"></div>
+            <div class="mix blue small square"></div>
+            <div class="mix pink small square"></div>
+            <div class="mix green large square"></div>
+            <div class="mix blue large circle"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+        <script src="../../dist/mixitup-multifilter.js"></script>
+
+        <script>
+            var containerEl = document.querySelector('.container');
+
+            var mixer = mixitup(containerEl, {
+                multifilter: {
+                    enable: true
+                },
+                animation: {
+                    effects: 'fade translateZ(-100px)'
+                }
+            });
+        </script>
+    </body>
+</html>
