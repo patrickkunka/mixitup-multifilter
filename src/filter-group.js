@@ -274,7 +274,8 @@ h.extend(mixitup.FilterGroup.prototype, {
     getSingleValue: function(input) {
         var self            = this,
             attributeName   = '',
-            selector        = '';
+            selector        = '',
+            value           = '';
 
         if (input.type.match(/text|search|password/g)) {
             attributeName = input.getAttribute('data-search-attribute');
@@ -289,7 +290,9 @@ h.extend(mixitup.FilterGroup.prototype, {
                 return;
             }
 
-            selector = '[' + attributeName + '*="' + input.value + '"]';
+            value = input.value.toLowerCase();
+
+            selector = '[' + attributeName + '*="' + value + '"]';
         } else {
             selector = input.value;
         }

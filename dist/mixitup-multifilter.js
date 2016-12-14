@@ -1,9 +1,9 @@
 /**!
- * MixItUp MultiFilter v3.0.1
+ * MixItUp MultiFilter v3.0.2
  * A UI-builder for powerful multidimensional filtering
- * Build c547994d-1483-4c6c-9ff9-c0bac444da9a
+ * Build 57e6098c-daa0-4770-a099-8ea311feebde
  *
- * Requires mixitup.js >= v3.0.0
+ * Requires mixitup.js >= v^3.0.0
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -465,7 +465,8 @@
             getSingleValue: function(input) {
                 var self            = this,
                     attributeName   = '',
-                    selector        = '';
+                    selector        = '',
+                    value           = '';
 
                 if (input.type.match(/text|search|password/g)) {
                     attributeName = input.getAttribute('data-search-attribute');
@@ -480,7 +481,9 @@
                         return;
                     }
 
-                    selector = '[' + attributeName + '*="' + input.value + '"]';
+                    value = input.value.toLowerCase();
+
+                    selector = '[' + attributeName + '*="' + value + '"]';
                 } else {
                     selector = input.value;
                 }
@@ -895,8 +898,8 @@
 
     mixitupMultifilter.TYPE                    = 'mixitup-extension';
     mixitupMultifilter.NAME                    = 'mixitup-multifilter';
-    mixitupMultifilter.EXTENSION_VERSION       = '3.0.1';
-    mixitupMultifilter.REQUIRE_CORE_VERSION    = '3.0.0';
+    mixitupMultifilter.EXTENSION_VERSION       = '3.0.2';
+    mixitupMultifilter.REQUIRE_CORE_VERSION    = '^3.0.0';
 
     if (typeof exports === 'object' && typeof module === 'object') {
         module.exports = mixitupMultifilter;

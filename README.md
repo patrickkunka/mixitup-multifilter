@@ -189,6 +189,8 @@ Selects can be used to select one value from many values with a very small footp
 
 Text inputs can be used to search targets by a partial or complete string. A `data-search-attribute` must be added to the input to tell MixItUp which attribute to search. The example above searches the `class` attribute, consistent with the other examples. For example, entering the string `'Gree'` would show any targets with the class `'green'`.
 
+NB: The value of your text input will be converted to lowercase before searching, so ensure that the contents of the attribute you intend to search are also lowercase.
+
 ### Configuring Filter Group Logic
 
 MixItUp MultiFilter allows us to define one type of logic between filter groups and another type within them, using the configuration options `multifilter.logicBetween` and `multifilter.logicWithin`.
