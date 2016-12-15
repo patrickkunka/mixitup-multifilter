@@ -1,0 +1,242 @@
+html,
+body {
+    height: 100%;
+    background: #f2f2f2;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+/* Controls
+---------------------------------------------------------------------- */
+
+.controls {
+    padding: 1rem;
+    background: #333;
+    font-size: 0.1px;
+}
+
+.control-group {
+    display: inline-block;
+    margin-left: .75rem;
+    vertical-align: top;
+}
+
+.control {
+    position: relative;
+    display: inline-block;
+    width: 2.7rem;
+    height: 2.7rem;
+    background: #444;
+    cursor: pointer;
+    font-size: 0.1px;
+    color: white;
+    transition: background 150ms;
+}
+
+.control-text {
+    width: auto;
+    font-size: .9rem;
+    padding: 0 1rem;
+    font-family: 'helvetica-neue', arial, sans-serif;
+    font-weight: 700;
+}
+
+.control:not(.mixitup-control-active):hover {
+    background: #3f3f3f;
+}
+
+.control-sort:after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid;
+    border-left: 2px solid;
+    top: calc(50% - 6px);
+    left: calc(50% - 6px);
+    transform:  translateY(2px) rotate(45deg);
+}
+
+.control-sort[data-sort*=":desc"]:after {
+    transform:  translateY(-3px) rotate(-135deg);
+}
+
+.mixitup-control-active {
+    background: #393939;
+}
+
+.control:first-of-type {
+    border-radius: 3px 0 0 3px;
+}
+
+.control:last-of-type {
+    border-radius: 0 3px 3px 0;
+}
+
+.text-input-wrapper {
+    display: inline-block;
+    padding: .5rem;
+    background: #2a2a2a;
+    margin-left: .75rem;
+    vertical-align: top;
+}
+
+.text-input-wrapper input {
+    font-family: 'helvetica-neue', arial, sans-serif;
+    font-size: .9rem;
+    padding: .5em;
+    border-radius: 2px;
+    border: 0;
+}
+
+/* Container
+---------------------------------------------------------------------- */
+
+.container {
+    padding: 1rem;
+    text-align: justify;
+    font-size: 0.1px;
+}
+
+.container:after {
+    content: '';
+    display: inline-block;
+    width: 100%;
+}
+
+/* Target Elements
+---------------------------------------------------------------------- */
+
+.mix,
+.gap {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.mix {
+    background: #fff;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.mix:before {
+    content: '';
+    display: inline-block;
+    padding-top: 100%;
+}
+
+.mix.green {
+    color: #91e6c7;
+}
+
+.mix.pink {
+    color: #d595aa;
+}
+
+.mix.blue {
+    color: #5ecdde;
+}
+
+.mix:after {
+    content: '';
+    position: absolute;
+}
+
+.mix.square:after,
+.mix.circle:after {
+    width: 40%;
+    height: 40%;
+    top: 30%;
+    left: 30%;
+    background: currentColor;
+    border-radius: 3px;
+}
+
+.mix.circle:after {
+    border-radius: 100%;
+}
+
+.mix.triangle:after {
+    font-size: 3vw;
+    border: 3em solid transparent;
+    border-bottom: 5em solid currentColor;
+    border-top: 0;
+    left: calc(50% - 3em);
+    top: calc(50% - 3em);
+}
+
+.mix.medium:after {
+    transform: scale(.75);
+}
+
+.mix.small:after {
+    transform: scale(.5);
+}
+
+/* Grid Breakpoints
+---------------------------------------------------------------------- */
+
+/* 2 Columns */
+
+.mix,
+.gap {
+    width: calc(100%/2 - (((2 - 1) * 1rem) / 2));
+}
+
+/* 3 Columns */
+
+@media screen and (min-width: 541px) {
+    .mix,
+    .gap {
+        width: calc(100%/3 - (((3 - 1) * 1rem) / 3));
+    }
+
+    .mix.triangle:after {
+        font-size: 2vw;
+    }
+}
+
+/* 4 Columns */
+
+@media screen and (min-width: 961px) {
+    .mix,
+    .gap {
+        width: calc(100%/4 - (((4 - 1) * 1rem) / 4));
+    }
+
+    .mix.triangle:after {
+        font-size: 1.5vw;
+    }
+}
+
+/* 5 Columns */
+
+@media screen and (min-width: 1281px) {
+    .mix,
+    .gap {
+        width: calc(100%/5 - (((5 - 1) * 1rem) / 5));
+    }
+
+    .mix.triangle:after {
+        font-size: 1.25vw;
+    }
+}
+
+/* 6 Columns */
+
+@media screen and (min-width: 1401px) {
+    .mix,
+    .gap {
+        width: calc(100%/6 - (((6 - 1) * 1rem) / 6));
+    }
+
+    .mix.triangle:after {
+        font-size: 1vw;
+    }
+}
+
+

@@ -290,7 +290,7 @@ h.extend(mixitup.FilterGroup.prototype, {
                 return;
             }
 
-            value = input.value.toLowerCase();
+            value = input.value.replace(/\W+/g, ' ').toLowerCase().trim();
 
             selector = '[' + attributeName + '*="' + value + '"]';
         } else {

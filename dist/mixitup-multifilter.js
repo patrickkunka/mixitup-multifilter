@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.0.2
  * A UI-builder for powerful multidimensional filtering
- * Build 57e6098c-daa0-4770-a099-8ea311feebde
+ * Build 2262188b-f319-4fad-8eff-ec9c70214f52
  *
  * Requires mixitup.js >= v^3.0.0
  *
@@ -481,7 +481,7 @@
                         return;
                     }
 
-                    value = input.value.toLowerCase();
+                    value = input.value.replace(/\W+/g, ' ').toLowerCase().trim();
 
                     selector = '[' + attributeName + '*="' + value + '"]';
                 } else {

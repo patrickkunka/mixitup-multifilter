@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp MultiFilter Demo - Text Inputs</title>
+    </head>
+    <body>
+        <form class="controls">
+            <button type="reset" class="control control-text">Reset</button>
+
+            <fieldset data-filter-group class="text-input-wrapper">
+                <input type="text" data-search-attribute="data-color" placeholder="Search by color"/>
+            </fieldset>
+
+            <fieldset data-filter-group class="text-input-wrapper">
+                <input type="text" data-search-attribute="data-shape" placeholder="Search by shape"/>
+            </fieldset>
+
+            <fieldset data-filter-group class="text-input-wrapper">
+                <input type="text" data-search-attribute="data-size" placeholder="Search by size"/>
+            </fieldset>
+
+            <div class="control-group">
+                <button type="button" class="control control-sort" data-sort="default:asc">Asc</button>
+                <button type="button" class="control control-sort" data-sort="default:desc">Desc</button>
+            </div>
+        </form>
+
+        <div class="container">
+            <div class="mix green small square" data-color="green" data-shape="square" data-size="small"></div>
+            <div class="mix green medium square" data-color="green" data-shape="square" data-size="medium"></div>
+            <div class="mix blue large triangle" data-color="blue" data-shape="triangle" data-size="large"></div>
+            <div class="mix pink large circle" data-color="pink" data-shape="circle" data-size="large"></div>
+            <div class="mix green small circle" data-color="green" data-shape="circle" data-size="small"></div>
+            <div class="mix blue medium triangle" data-color="blue" data-shape="triangle" data-size="medium"></div>
+            <div class="mix pink medium square" data-color="pink" data-shape="square" data-size="medium"></div>
+            <div class="mix blue medium triangle" data-color="blue" data-shape="triangle" data-size="medium"></div>
+            <div class="mix pink small circle" data-color="pink" data-shape="circle" data-size="small"></div>
+            <div class="mix green large triangle" data-color="green" data-shape="triangle" data-size="large"></div>
+            <div class="mix blue small square" data-color="blue" data-shape="square" data-size="small"></div>
+            <div class="mix pink small square" data-color="pink" data-shape="square" data-size="small"></div>
+            <div class="mix green large square" data-color="green" data-shape="square" data-size="large"></div>
+            <div class="mix blue large circle" data-color="blue" data-shape="circle" data-size="large"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+        <script src="../../dist/mixitup-multifilter.js"></script>
+
+        <script>
+            var containerEl = document.querySelector('.container');
+
+            var mixer = mixitup(containerEl, {
+                multifilter: {
+                    enable: true
+                },
+                animation: {
+                    effects: 'fade translateZ(-100px)'
+                }
+            });
+        </script>
+    </body>
+</html>
