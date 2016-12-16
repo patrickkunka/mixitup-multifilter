@@ -1,9 +1,9 @@
 /**!
- * MixItUp MultiFilter v3.0.3
+ * MixItUp MultiFilter v3.1.0
  * A UI-builder for powerful multidimensional filtering
- * Build 9fc51b8f-4bbb-494a-b18c-47047780af48
+ * Build c470b7f8-26e4-4c8e-a14d-bcc9fbe2baa5
  *
- * Requires mixitup.js >= v^3.0.0
+ * Requires mixitup.js >= v^3.1.0
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -317,12 +317,17 @@
              */
 
             handleClick: function(e) {
-                var self       = this,
-                    controlEl  = h.closestParent(e.target, '[data-filter], [data-toggle]', true),
-                    index      = -1,
-                    selector   = '';
+                var self            = this,
+                    controlEl       = h.closestParent(e.target, '[data-filter], [data-toggle]', true),
+                    controlSelector = '',
+                    index           = -1,
+                    selector        = '';
 
                 if (!controlEl) return;
+
+                if ((controlSelector = self.mixer.config.selectors.control) && !controlEl.matches(controlSelector)) {
+                    return;
+                }
 
                 e.stopPropagation();
 
@@ -898,8 +903,8 @@
 
     mixitupMultifilter.TYPE                    = 'mixitup-extension';
     mixitupMultifilter.NAME                    = 'mixitup-multifilter';
-    mixitupMultifilter.EXTENSION_VERSION       = '3.0.3';
-    mixitupMultifilter.REQUIRE_CORE_VERSION    = '^3.0.0';
+    mixitupMultifilter.EXTENSION_VERSION       = '3.1.0';
+    mixitupMultifilter.REQUIRE_CORE_VERSION    = '^3.1.0';
 
     if (typeof exports === 'object' && typeof module === 'object') {
         module.exports = mixitupMultifilter;

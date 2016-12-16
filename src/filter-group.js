@@ -126,12 +126,17 @@ h.extend(mixitup.FilterGroup.prototype, {
      */
 
     handleClick: function(e) {
-        var self       = this,
-            controlEl  = h.closestParent(e.target, '[data-filter], [data-toggle]', true),
-            index      = -1,
-            selector   = '';
+        var self            = this,
+            controlEl       = h.closestParent(e.target, '[data-filter], [data-toggle]', true),
+            controlSelector = '',
+            index           = -1,
+            selector        = '';
 
         if (!controlEl) return;
+
+        if ((controlSelector = self.mixer.config.selectors.control) && !controlEl.matches(controlSelector)) {
+            return;
+        }
 
         e.stopPropagation();
 
