@@ -302,7 +302,7 @@ h.extend(mixitup.FilterGroup.prototype, {
             selector = input.value;
         }
 
-        if (input.value) {
+        if (typeof input.value === 'string') {
             self.activeSelectors = [selector];
         }
     },

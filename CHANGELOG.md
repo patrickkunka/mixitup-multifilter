@@ -21,3 +21,7 @@ Change Log
 
 - Integrates with `selectors.controls` configuration option added to MixItUp core 3.1.0 to add specificity to control
 selectors and prevent inteference by third-party markup which may share the mandatory control data attributes.
+
+## 3.1.1
+
+- Fixes issue where empty string values in `<select>` elements were ignored
