@@ -24,4 +24,8 @@ selectors and prevent inteference by third-party markup which may share the mand
 
 ## 3.1.1
 
-- Fixes issue where empty string values in `<select>` elements were ignored
+- Fixes issue where empty string values in `<select>` elements were ignored.
+
+## 3.1.2
+
+- Bumps core dependency to 3.1.2, improves version comparison functionality.
