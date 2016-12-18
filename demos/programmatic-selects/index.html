@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp MultiFilter Demo - Programmatic Filtering with Selects</title>
+    </head>
+    <body>
+        <!-- This demo will show how we can programmatically update both our multifilter UI
+        and the mixer simultanesouly, using the `setFilterGroupSelectors()` and
+        `parseSelectorGroups()` API methods.
+
+        Click on a target in the container, and the container will be filtered according
+        to that target's attributes.-->
+
+        <form class="controls">
+            <button type="reset" class="control control-text">Reset</button>
+
+            <!-- NB: Each filter group has been named by providing a value to the `data-filter-group` attribute -->
+
+            <fieldset data-filter-group="color" class="select-wrapper">
+                <select>
+                    <option value="">Color</option>
+                    <option value=".green">Green</option>
+                    <option value=".blue">Blue</option>
+                    <option value=".pink">Pink</option>
+                </select>
+            </fieldset>
+
+            <fieldset data-filter-group="shape" class="select-wrapper">
+                <select>
+                    <option value="">Shape</option>
+                    <option value=".square">Square</option>
+                    <option value=".circle">Circle</option>
+                    <option value=".triangle">Triangle</option>
+                </select>
+            </fieldset>
+
+            <fieldset data-filter-group="size" class="select-wrapper">
+                <select>
+                    <option value="">Size</option>
+                    <option value=".small">Small</option>
+                    <option value=".medium">Medium</option>
+                    <option value=".large">Large</option>
+                </select>
+            </fieldset>
+
+            <div class="control-group">
+                <button type="button" class="control control-sort" data-sort="default:asc">Asc</button>
+                <button type="button" class="control control-sort" data-sort="default:desc">Desc</button>
+            </div>
+        </form>
+
+        <div class="container">
+            <div class="mix green small square" data-color="green" data-size="small" data-shape="square"></div>
+            <div class="mix green medium square" data-color="green" data-size="medium" data-shape="square"></div>
+            <div class="mix blue large triangle" data-color="blue" data-size="large" data-shape="triangle"></div>
+            <div class="mix pink large circle" data-color="pink" data-size="large" data-shape="circle"></div>
+            <div class="mix green small circle" data-color="green" data-size="small" data-shape="circle"></div>
+            <div class="mix blue medium triangle" data-color="blue" data-size="medium" data-shape="triangle"></div>
+            <div class="mix pink medium square" data-color="pink" data-size="medium" data-shape="square"></div>
+            <div class="mix blue medium triangle" data-color="blue" data-size="medium" data-shape="triangle"></div>
+            <div class="mix pink small circle" data-color="pink" data-size="small" data-shape="circle"></div>
+            <div class="mix green large triangle" data-color="green" data-size="large" data-shape="triangle"></div>
+            <div class="mix blue small square" data-color="blue" data-size="small" data-shape="square"></div>
+            <div class="mix pink small square" data-color="pink" data-size="small" data-shape="square"></div>
+            <div class="mix green large square" data-color="green" data-size="large" data-shape="square"></div>
+            <div class="mix blue large circle" data-color="blue" data-size="large" data-shape="circle"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+        <script src="../../dist/mixitup-multifilter.js"></script>
+
+        <script>
+            var containerEl = document.querySelector('.container');
+
+            var mixer = mixitup(containerEl, {
+                multifilter: {
+                    enable: true
+                },
+                animation: {
+                    effects: 'fade translateZ(-100px)'
+                }
+            });
+
+            // Add a delegated click event handler to the container
+
+            containerEl.addEventListener('click', handleContainerClick);
+
+            function handleContainerClick(e) {
+                var color, size, shape;
+                var target = e.target;
+
+                // If the clicked element is not a target, do not handle
+
+                if (!target.matches('.mix')) return;
+
+                // Build up a selector for each group using the data attributes present on the target
+
+                color = '.' + target.getAttribute('data-color');
+                size  = '.' + target.getAttribute('data-size');
+                shape = '.' + target.getAttribute('data-shape');
+
+                // Set the active filter
+
+                mixer.setFilterGroupSelectors('color', color);
+                mixer.setFilterGroupSelectors('size', size);
+                mixer.setFilterGroupSelectors('shape', shape);
+
+                // Now that each group has been udpated, parse the filter groups and filter the container
+
+                mixer.parseFilterGroups();
+            }
+        </script>
+    </body>
+</html>

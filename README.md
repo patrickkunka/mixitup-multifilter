@@ -320,3 +320,27 @@ To prevent users from accidentally triggering an HTTP form submission by clickin
 ```html
 <button type="submit" disabled>Search</button>
 ```
+
+#### Named Filter Groups
+
+If we wish to interact with our filter groups via the `.setFilterGroupSelectors()` API method (see [Mixer API Methods](https://www.kunkalabs.com/mixitup-multifilter/api-methods/)), we can name our groups by providing a value to `data-filter-group` attribute.
+
+```html
+<form>
+    <fieldset data-filter-group="color">
+        ...
+    </fieldset>
+
+    <fieldset data-filter-group="size">
+        ...
+    </fieldset>
+</form>
+```
+
+We can then target that group by its name when we call the API method:
+
+```js
+mixer.setFilterGroupSelectors('color', ['.green', '.blue']);
+
+mixer.parseFilterGroups()
+```

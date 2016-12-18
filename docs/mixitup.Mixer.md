@@ -11,10 +11,13 @@ core documentation.
 ### Contents
 
 - [parseFilterGroups()](#parseFilterGroups)
+- [setFilterGroupSelectors()](#setFilterGroupSelectors)
+- [getFilterGroupSelectors()](#getFilterGroupSelectors)
 
 
 <h3 id="parseFilterGroups">parseFilterGroups()</h3>
 
+*Version added: 3.0.0*
 
 `.parseFilterGroups([animate] [, callback])`
 
@@ -23,8 +26,8 @@ compound selector string as per the defined logic. A filter operation
 is then called on the mixer using the generated selector.
 
 This method can be used to programmatically trigger the parsing of
-filter groups after manipulations to the UI which would not otherwise
-trigger a `change` automatically.
+filter groups after manipulations to a group's active selector(s) by
+the `.setFilterGroupSelectors()` API method.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
@@ -44,5 +47,71 @@ checkboxes.forEach(function(checkbox) {
 });
 
 mixer.parseFilterGroups();
+```
+
+<h3 id="setFilterGroupSelectors">setFilterGroupSelectors()</h3>
+
+*Version added: 3.2.0*
+
+`.setFilterGroupSelectors(groupName, selectors)`
+
+Programmatically sets one or more active selectors for a specific filter
+group and updates the group's UI.
+
+Because MixItUp has no way of knowing how to break down a provided
+compound selector into its component groups, we can not use the
+standard `.filter()` or `toggleOn()/toggleOff()` API methods when using
+the MultiFilter extension. Instead, this method allows us to perform
+multi-dimensional filtering via the API by setting the active selectors of
+individual groups and then triggering the `.parseFilterGroups()` method.
+
+If setting multiple active selectors, do not pass a compound selector.
+Instead, pass an array with each item containing a single selector
+string as in example 2.
+
+|   |Type | Name | Description
+|---|--- | --- | ---
+|Param   |`string` | `groupName` | 
+|Param   |`string, Array.<string>` | `selectors` | 
+|Returns |`void` | 
+
+
+###### Example 1: Setting a single active selector for a "color" group
+
+```js
+
+mixer.setFilterGroupSelectors('color', '.green');
+
+mixer.parseFilterGroups();
+```
+###### Example 2: Setting multiple active selectors for a "size" group
+
+```js
+
+mixer.setFilterGroupSelectors('size', ['.small', '.large']);
+
+mixer.parseFilterGroups();
+```
+
+<h3 id="getFilterGroupSelectors">getFilterGroupSelectors()</h3>
+
+*Version added: 3.2.0*
+
+`.getFilterGroupSelectors(groupName)`
+
+Returns an array of active selectors for a specific filter group.
+
+|   |Type | Name | Description
+|---|--- | --- | ---
+|Param   |`string` | `groupName` | 
+|Param   |`string, Array.<string>` | `selectors` | 
+|Returns |`void` | 
+
+
+###### Example: Retrieving the active selectors for a "size" group
+
+```js
+
+mixer.setFilterGroupSelectors('size'); // ['.small', '.large']
 ```
 

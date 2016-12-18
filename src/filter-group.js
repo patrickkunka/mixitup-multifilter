@@ -1,6 +1,7 @@
 /* global mixitup, h */
 
 mixitup.FilterGroup = function() {
+    this.name               = '';
     this.dom                = new mixitup.FilterGroupDom();
     this.activeSelectors    = [];
     this.activeToggles      = [];
@@ -27,6 +28,8 @@ h.extend(mixitup.FilterGroup.prototype, {
             logic = el.getAttribute('data-logic');
 
         self.dom.el = el;
+
+        this.name = self.dom.el.getAttribute('data-filter-group') || '';
 
         self.cacheDom();
 
@@ -286,7 +289,7 @@ h.extend(mixitup.FilterGroup.prototype, {
             attributeName = input.getAttribute('data-search-attribute');
 
             if (!attributeName) {
-                throw new Error('[MixItUp] A valid `data-search-attribute` must be present on text inputs');
+                throw new Error('[MixItUp MultiFilter] A valid `data-search-attribute` must be present on text inputs');
             }
 
             if (input.value.length < self.mixer.config.multifilter.minSearchLength) {
@@ -349,22 +352,27 @@ h.extend(mixitup.FilterGroup.prototype, {
 
     /**
      * @private
+     * @param   {Array.<HTMLELement>} [controlEls]
+     * @param   {boolean}             [activateToggles]
      * @return  {void}
      */
 
-    updateControls: function() {
+    updateControls: function(controlEls, activateToggles) {
         var self        = this,
-            controlsEls = self.dom.el.querySelectorAll('[data-filter], [data-toggle]'),
             controlEl   = null,
             type        = 'filter',
             i           = -1;
 
-        for (i = 0; controlEl = controlsEls[i]; i++) {
+        controlEls = controlEls || self.dom.el.querySelectorAll('[data-filter], [data-toggle]');
+
+        activateToggles = activateToggles || false;
+
+        for (i = 0; controlEl = controlEls[i]; i++) {
             if (controlEl.getAttribute('data-toggle')) {
                 type = 'toggle';
             }
 
-            self.updateControl(controlEl, type);
+            self.updateControl(controlEl, type, activateToggles);
         }
     },
 
@@ -372,10 +380,11 @@ h.extend(mixitup.FilterGroup.prototype, {
      * @private
      * @param   {HTMLELement}   controlEl
      * @param   {string}        type
+     * @param   {boolean}       [activateToggle]
      * @return  {void}
      */
 
-    updateControl: function(controlEl, type) {
+    updateControl: function(controlEl, type, activateToggle) {
         var self            = this,
             selector        = controlEl.getAttribute('data-' + type),
             activeClassName = '';
@@ -384,8 +393,46 @@ h.extend(mixitup.FilterGroup.prototype, {
 
         if (self.activeSelectors.indexOf(selector) > -1) {
             h.addClass(controlEl, activeClassName);
+
+            if (activateToggle) {
+                self.activeToggles.push(selector);
+            }
         } else {
             h.removeClass(controlEl, activeClassName);
+        }
+    },
+
+    /**
+     * @private
+     */
+
+    updateUi: function() {
+        var self        = this,
+            controlEls  = self.dom.el.querySelectorAll('[data-filter], [data-toggle]'),
+            inputEls    = self.dom.el.querySelectorAll('input[type="radio"], input[type="checkbox"], option'),
+            isActive    = false,
+            inputEl     = null,
+            i           = -1;
+
+        if (controlEls.length) {
+            self.activeToggles = [];
+
+            self.updateControls(controlEls, true);
+        }
+
+        for (i = 0; inputEl = inputEls[i]; i++) {
+            isActive = self.activeSelectors.indexOf(inputEl.value) > -1;
+
+            switch (inputEl.tagName.toLowerCase()) {
+                case 'option':
+                    inputEl.selected = isActive;
+
+                    break;
+                case 'input':
+                    inputEl.checked = isActive;
+
+                    break;
+            }
         }
     }
 });

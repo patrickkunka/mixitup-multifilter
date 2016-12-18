@@ -29,3 +29,8 @@ selectors and prevent inteference by third-party markup which may share the mand
 ## 3.1.2
 
 - Bumps core dependency to 3.1.2, improves version comparison functionality.
+
+## 3.2.0
+
+- Adds `.setFilterGroupSelectors()` and `.getFilterGroupSelectors()` methods to allow multi dimensional filtering
+and programmatic control of the UI via the API.
