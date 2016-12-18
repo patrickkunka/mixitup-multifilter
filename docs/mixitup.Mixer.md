@@ -71,8 +71,8 @@ string as in example 2.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`string` | `groupName` | 
-|Param   |`string, Array.<string>` | `selectors` | 
+|Param   |`string` | `groupName` | The name of the filter group as defined in the markup via the `data-filter-group` attribute.
+|Param   |`string, Array.<string>` | `selectors` | A single selector string, or multiple selector strings as an array.
 |Returns |`void` | 
 
 
@@ -103,8 +103,7 @@ Returns an array of active selectors for a specific filter group.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`string` | `groupName` | 
-|Param   |`string, Array.<string>` | `selectors` | 
+|Param   |`string` | `groupName` | The name of the filter group as defined in the markup via the `data-filter-group` attribute.
 |Returns |`void` | 
 
 
@@ -112,6 +111,6 @@ Returns an array of active selectors for a specific filter group.
 
 ```js
 
-mixer.setFilterGroupSelectors('size'); // ['.small', '.large']
+mixer.getFilterGroupSelectors('size'); // ['.small', '.large']
 ```
 

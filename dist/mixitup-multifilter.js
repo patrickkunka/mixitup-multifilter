@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.2.0
  * A UI-builder for powerful multidimensional filtering
- * Build 3c0ab51b-8a5a-4626-b243-27654f1f9b1c
+ * Build c55eb4d7-2126-42f6-8ffa-23b360050e93
  *
  * Requires mixitup.js >= v^3.1.2
  *
@@ -988,8 +988,8 @@
              *
              * @public
              * @since   3.2.0
-             * @param   {string} groupName
-             * @param   {(string|Array.<string>)} selectors
+             * @param   {string}                    groupName   The name of the filter group as defined in the markup via the `data-filter-group` attribute.
+             * @param   {(string|Array.<string>)}   selectors   A single selector string, or multiple selector strings as an array.
              * @return  {void}
              */
 
@@ -1016,12 +1016,11 @@
              *
              * @example <caption>Example: Retrieving the active selectors for a "size" group</caption>
              *
-             * mixer.setFilterGroupSelectors('size'); // ['.small', '.large']
+             * mixer.getFilterGroupSelectors('size'); // ['.small', '.large']
              *
              * @public
              * @since   3.2.0
-             * @param   {string} groupName
-             * @param   {(string|Array.<string>)} selectors
+             * @param   {string}    groupName   The name of the filter group as defined in the markup via the `data-filter-group` attribute.
              * @return  {void}
              */
 
