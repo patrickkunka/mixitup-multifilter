@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp MultiFilter Demo - Programmatic Filtering by URL</title>
+    </head>
+    <body>
+        <!-- This demo will show how we can programmatically set both our multifilter UI
+        and the mixer simultanesouly on page load.
+
+        Because of the amount of data required to accurately set the UI state, a JSON object
+        is used as the hash rather than a single string as can be used when using basic filtering.
+
+        Click on some filters to create your desired filtering then refresh the page.-->
+
+        <form class="controls">
+            <button type="reset" class="control control-text">Reset</button>
+
+            <!-- NB: Each filter group has been named by providing a value to the `data-filter-group` attribute -->
+
+            <fieldset data-filter-group="color" class="control-group">
+                <label class="control-group-label">Color</label>
+
+                <button type="button" class="control control-color" data-filter=".green">Green</button>
+                <button type="button" class="control control-color" data-filter=".blue">Blue</button>
+                <button type="button" class="control control-color" data-filter=".pink">Pink</button>
+            </fieldset>
+
+            <fieldset data-filter-group="shape" class="control-group">
+                <label class="control-group-label">Shape</label>
+
+                <button type="button" class="control control-shape" data-filter=".square">Square</button>
+                <button type="button" class="control control-shape" data-filter=".circle">Circle</button>
+                <button type="button" class="control control-shape" data-filter=".triangle">Triangle</button>
+            </fieldset>
+
+            <fieldset data-filter-group="size" class="control-group">
+                <label class="control-group-label">Size</label>
+
+                <button type="button" class="control control-size" data-filter=".small">Small</button>
+                <button type="button" class="control control-size" data-filter=".medium">Medium</button>
+                <button type="button" class="control control-size" data-filter=".large">Large</button>
+            </fieldset>
+
+            <div class="control-group">
+                <button type="button" class="control control-sort" data-sort="default:asc">Asc</button>
+                <button type="button" class="control control-sort" data-sort="default:desc">Desc</button>
+            </div>
+        </form>
+
+        <div class="container">
+            <div class="mix green small square"></div>
+            <div class="mix green medium square"></div>
+            <div class="mix blue large triangle"></div>
+            <div class="mix pink large circle"></div>
+            <div class="mix green small circle"></div>
+            <div class="mix blue medium triangle"></div>
+            <div class="mix pink medium square"></div>
+            <div class="mix blue medium triangle"></div>
+            <div class="mix pink small circle"></div>
+            <div class="mix green large triangle"></div>
+            <div class="mix blue small square"></div>
+            <div class="mix pink small square"></div>
+            <div class="mix green large square"></div>
+            <div class="mix blue large circle"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+        <script src="../../dist/mixitup-multifilter.js"></script>
+
+        <script>
+            var containerEl = document.querySelector('.container');
+            var targetSelector = '.mix';
+            var activeFilterGroupsStateJson = '';
+
+            /**
+             * Reads a JSON string of filter group states from the URL (if present),
+             * and returns an object.
+             *
+             * @return {object|null}
+             */
+
+            function getObjectFromHash() {
+                var hash = window.location.hash.replace(/^#/g, '');
+                var json = hash ? decodeURIComponent(hash) : '';
+                var obj = null;
+
+                try {
+                    obj = json ? JSON.parse(json) : null;
+                } catch(e) {
+                    console.warn('The URL hash is not valid JSON');
+                }
+
+                return obj;
+            }
+
+            /**
+             * Constructs a `filterGroupsState` object using the
+             * `getFilterGroupSelectors()` API method.
+             *
+             * @return {void}
+             */
+
+            function getFilterGroupsState() {
+                // NB: You will need to rename the object keys to match the names of
+                // your project's filter groups – these should match those defined
+                // in your HTML.
+
+                var filterGroupsState = {
+                    color: mixer.getFilterGroupSelectors('color'),
+                    shape: mixer.getFilterGroupSelectors('shape'),
+                    size: mixer.getFilterGroupSelectors('size')
+                };
+
+                return filterGroupsState;
+            }
+
+            /**
+             * Updates the URL hash whenever the current filter changes.
+             *
+             * @param   {mixitup.State} state
+             * @return  {void}
+             */
+
+            function setHash(state) {
+                var selector = state.activeFilter.selector;
+
+                // Construct an object representing the current state of each
+                // filter group
+
+                var filterGroupsState = getFilterGroupsState();
+
+                // Create a JSON string from the above object
+
+                var filterGroupsStateJson = JSON.stringify(filterGroupsState);
+
+                // Create a URL hash string by URI encoding the JSON string
+
+                var newHash = '#' + encodeURIComponent(filterGroupsStateJson);
+
+                if (selector === targetSelector && window.location.hash) {
+                    // Equivalent to filter "all", remove the hash
+
+                    activeFilterGroupsStateJson = '';
+
+                    history.pushState(null, document.title, window.location.pathname); // or `history.replaceState()`
+                } else if (newHash !== window.location.hash && selector !== targetSelector) {
+                    // Change the hash
+
+                    activeFilterGroupsStateJson = filterGroupsStateJson;
+
+                    history.pushState(null, document.title, window.location.pathname + newHash); // or `history.replaceState()`
+                }
+            }
+
+            /**
+             * Filters the mixer and updates the multifilter UI using a provided
+             * filterGroupsState object.
+             *
+             * @param  {object}     filterGroupsState
+             * @param  {boolean}    [animate]
+             * @return {Promise}
+             */
+
+            function filterMixerByFilterGroupsState(filterGroupsState, animate) {
+                mixer.setFilterGroupSelectors('color', filterGroupsState ? filterGroupsState.color : []);
+                mixer.setFilterGroupSelectors('size', filterGroupsState ? filterGroupsState.size : []);
+                mixer.setFilterGroupSelectors('shape', filterGroupsState ? filterGroupsState.shape : []);
+
+                // Parse the filter groups (passing `false` will perform no animation)
+
+                return mixer.parseFilterGroups(animate ? true : false);
+            }
+
+            var filterGroupsState = getObjectFromHash();
+
+            // Instantiate MixItUp
+
+            var mixer = mixitup(containerEl, {
+                multifilter: {
+                    enable: true
+                },
+                animation: {
+                    effects: 'fade translateZ(-100px)'
+                },
+                callbacks: {
+                    onMixEnd: setHash // Call the setHash() method at the end of each operation
+                }
+            });
+
+            if (filterGroupsState) {
+                // If a valid filterGroupsState object is present on page load, filter the mixer
+
+                filterMixerByFilterGroupsState(filterGroupsState);
+            }
+
+            // Add an "onhashchange" handler to keep the mixer in sync as the user goes
+            // back and forward through their history.
+
+            // NB: This may or may not be the desired behavior for your project. If you don't
+            // want MixItUp operations to count as individual history items, simply use
+            // `history.replaceState()` instead of `history.pushState()` within the `setHash()`
+            // function above. In which case this handler would no longer be neccessary.
+
+            window.onhashchange = function() {
+                var filterGroupsState = getObjectFromHash();
+
+                // Convert the object back to a JSON string to compare it with the active filter groups state
+
+                var filterGroupsStateJson = JSON.stringify(filterGroupsState);
+
+                if (filterGroupsStateJson === activeFilterGroupsStateJson) return; // no change
+
+                activeFilterGroupsStateJson = filterGroupsStateJson;
+
+                filterMixerByFilterGroupsState(filterGroupsState, true);
+            };
+        </script>
+    </body>
+</html>
