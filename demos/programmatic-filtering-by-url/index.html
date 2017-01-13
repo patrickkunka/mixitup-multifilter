@@ -80,48 +80,78 @@
         <script>
             var containerEl = document.querySelector('.container');
             var targetSelector = '.mix';
-            var activeFilterGroupsStateJson = '';
+            var activeHash = '';
 
             /**
-             * Reads a JSON string of filter group states from the URL (if present),
-             * and returns an object.
+             * Deserializes a hash segment (if present) into in an object.
              *
              * @return {object|null}
              */
 
-            function getObjectFromHash() {
-                var hash = window.location.hash.replace(/^#/g, '');
-                var json = hash ? decodeURIComponent(hash) : '';
-                var obj = null;
+            function deserializeHash() {
+                var hash    = window.location.hash.replace(/^#/g, '');
+                var obj     = null;
+                var groups  = [];
 
-                try {
-                    obj = json ? JSON.parse(json) : null;
-                } catch(e) {
-                    console.warn('The URL hash is not valid JSON');
-                }
+                if (!hash) return obj;
+
+                obj = {};
+                groups = hash.split('&');
+
+                groups.forEach(function(group) {
+                    var pair = group.split('=');
+                    var groupName = pair[0];
+
+                    obj[groupName] = pair[1].split(',');
+                });
 
                 return obj;
             }
 
             /**
-             * Constructs a `filterGroupsState` object using the
+             * Serializes a groupsState object into a string.
+             *
+             * @param   {object}    groupsState
+             * @return  {string}
+             */
+
+            function serializeGroupsState(groupsState) {
+                var output = '';
+
+                for (var key in groupsState) {
+                    var values = groupsState[key];
+
+                    if (!values.length) continue;
+
+                    output += key + '=';
+                    output += values.join(',');
+                    output += '&';
+                };
+
+                output = output.replace(/&$/g, '');
+
+                return output;
+            }
+
+            /**
+             * Constructs a `groupsState` hash object using the
              * `getFilterGroupSelectors()` API method.
              *
              * @return {void}
              */
 
-            function getFilterGroupsState() {
+            function getGroupsState() {
                 // NB: You will need to rename the object keys to match the names of
                 // your project's filter groups – these should match those defined
                 // in your HTML.
 
-                var filterGroupsState = {
+                var groupsState = {
                     color: mixer.getFilterGroupSelectors('color'),
                     shape: mixer.getFilterGroupSelectors('shape'),
                     size: mixer.getFilterGroupSelectors('size')
                 };
 
-                return filterGroupsState;
+                return groupsState;
             }
 
             /**
@@ -137,26 +167,22 @@
                 // Construct an object representing the current state of each
                 // filter group
 
-                var filterGroupsState = getFilterGroupsState();
+                var groupsState = getGroupsState();
 
-                // Create a JSON string from the above object
+                // Create a URL hash string by serializing the groupsState object
 
-                var filterGroupsStateJson = JSON.stringify(filterGroupsState);
-
-                // Create a URL hash string by URI encoding the JSON string
-
-                var newHash = '#' + encodeURIComponent(filterGroupsStateJson);
+                var newHash = '#' + serializeGroupsState(groupsState);
 
                 if (selector === targetSelector && window.location.hash) {
                     // Equivalent to filter "all", remove the hash
 
-                    activeFilterGroupsStateJson = '';
+                    activeHash = '';
 
                     history.pushState(null, document.title, window.location.pathname); // or `history.replaceState()`
                 } else if (newHash !== window.location.hash && selector !== targetSelector) {
                     // Change the hash
 
-                    activeFilterGroupsStateJson = filterGroupsStateJson;
+                    activeHash = newHash;
 
                     history.pushState(null, document.title, window.location.pathname + newHash); // or `history.replaceState()`
                 }
@@ -164,24 +190,28 @@
 
             /**
              * Filters the mixer and updates the multifilter UI using a provided
-             * filterGroupsState object.
+             * groupsState object.
              *
-             * @param  {object}     filterGroupsState
-             * @param  {boolean}    [animate]
+             * @param  {object|null}    groupsState
+             * @param  {boolean}        [animate]
              * @return {Promise}
              */
 
-            function filterMixerByFilterGroupsState(filterGroupsState, animate) {
-                mixer.setFilterGroupSelectors('color', filterGroupsState ? filterGroupsState.color : []);
-                mixer.setFilterGroupSelectors('size', filterGroupsState ? filterGroupsState.size : []);
-                mixer.setFilterGroupSelectors('shape', filterGroupsState ? filterGroupsState.shape : []);
+            function filterMixerByGroupsState(groupsState, animate) {
+                var color = (groupsState && groupsState.color) ? groupsState.color : [];
+                var size = (groupsState && groupsState.size) ? groupsState.size : [];
+                var shape = (groupsState && groupsState.shape) ? groupsState.shape : [];
+
+                mixer.setFilterGroupSelectors('color', color);
+                mixer.setFilterGroupSelectors('size', size);
+                mixer.setFilterGroupSelectors('shape', shape);
 
                 // Parse the filter groups (passing `false` will perform no animation)
 
                 return mixer.parseFilterGroups(animate ? true : false);
             }
 
-            var filterGroupsState = getObjectFromHash();
+            var groupsState = deserializeHash();
 
             // Instantiate MixItUp
 
@@ -197,10 +227,10 @@
                 }
             });
 
-            if (filterGroupsState) {
-                // If a valid filterGroupsState object is present on page load, filter the mixer
+            if (groupsState) {
+                // If a valid groupsState object is present on page load, filter the mixer
 
-                filterMixerByFilterGroupsState(filterGroupsState);
+                filterMixerByGroupsState(groupsState);
             }
 
             // Add an "onhashchange" handler to keep the mixer in sync as the user goes
@@ -212,17 +242,16 @@
             // function above. In which case this handler would no longer be neccessary.
 
             window.onhashchange = function() {
-                var filterGroupsState = getObjectFromHash();
+                var groupsState = deserializeHash();
+                var hash        = window.location.hash;
 
-                // Convert the object back to a JSON string to compare it with the active filter groups state
+                // Compare new hash with active hash
 
-                var filterGroupsStateJson = JSON.stringify(filterGroupsState);
+                if (hash === activeHash) return; // no change
 
-                if (filterGroupsStateJson === activeFilterGroupsStateJson) return; // no change
+                activeHash = hash;
 
-                activeFilterGroupsStateJson = filterGroupsStateJson;
-
-                filterMixerByFilterGroupsState(filterGroupsState, true);
+                filterMixerByGroupsState(groupsState, true);
             };
         </script>
     </body>
