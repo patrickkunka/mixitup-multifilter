@@ -67,20 +67,20 @@ body {
     transition: background-color 150ms, border-color 150ms;
 }
 
-.control-color[data-filter=".green"] {
+.control-color[data-toggle=".green"] {
     color: #91e6c7;
 }
 
-.control-color[data-filter=".blue"] {
+.control-color[data-toggle=".blue"] {
     color: #5ecdde;
 }
 
-.control-color[data-filter=".pink"] {
+.control-color[data-toggle=".pink"] {
     color: #d595aa;
 }
 
-.control-shape[data-filter=".square"]:after,
-.control-shape[data-filter=".circle"]:after {
+.control-shape[data-toggle=".square"]:after,
+.control-shape[data-toggle=".circle"]:after {
     width: 10px;
     height: 10px;
     top: calc(50% - 5px);
@@ -89,11 +89,11 @@ body {
     border-radius: 2px;
 }
 
-.control-shape[data-filter=".circle"]:after {
+.control-shape[data-toggle=".circle"]:after {
     border-radius: 10px;
 }
 
-.control-shape[data-filter=".triangle"]:after {
+.control-shape[data-toggle=".triangle"]:after {
     border: 6px solid transparent;
     border-bottom: 9px solid white;
     top: calc(50% - 10px);
@@ -109,14 +109,14 @@ body {
     border-radius: 2px;
 }
 
-.control-size[data-filter=".medium"]:after {
+.control-size[data-toggle=".medium"]:after {
     width: 12px;
     height: 12px;
     top: calc(50% - 6px);
     left: calc(50% - 6px);
 }
 
-.control-size[data-filter=".large"]:after {
+.control-size[data-toggle=".large"]:after {
     width: 16px;
     height: 16px;
     top: calc(50% - 8px);

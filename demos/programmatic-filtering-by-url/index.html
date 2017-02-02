@@ -25,25 +25,25 @@
             <fieldset data-filter-group="color" class="control-group">
                 <label class="control-group-label">Color</label>
 
-                <button type="button" class="control control-color" data-filter=".green">Green</button>
-                <button type="button" class="control control-color" data-filter=".blue">Blue</button>
-                <button type="button" class="control control-color" data-filter=".pink">Pink</button>
+                <button type="button" class="control control-color" data-toggle=".green">Green</button>
+                <button type="button" class="control control-color" data-toggle=".blue">Blue</button>
+                <button type="button" class="control control-color" data-toggle=".pink">Pink</button>
             </fieldset>
 
             <fieldset data-filter-group="shape" class="control-group">
                 <label class="control-group-label">Shape</label>
 
-                <button type="button" class="control control-shape" data-filter=".square">Square</button>
-                <button type="button" class="control control-shape" data-filter=".circle">Circle</button>
-                <button type="button" class="control control-shape" data-filter=".triangle">Triangle</button>
+                <button type="button" class="control control-shape" data-toggle=".square">Square</button>
+                <button type="button" class="control control-shape" data-toggle=".circle">Circle</button>
+                <button type="button" class="control control-shape" data-toggle=".triangle">Triangle</button>
             </fieldset>
 
             <fieldset data-filter-group="size" class="control-group">
                 <label class="control-group-label">Size</label>
 
-                <button type="button" class="control control-size" data-filter=".small">Small</button>
-                <button type="button" class="control control-size" data-filter=".medium">Medium</button>
-                <button type="button" class="control control-size" data-filter=".large">Large</button>
+                <button type="button" class="control control-size" data-toggle=".small">Small</button>
+                <button type="button" class="control control-size" data-toggle=".medium">Medium</button>
+                <button type="button" class="control control-size" data-toggle=".large">Large</button>
             </fieldset>
 
             <div class="control-group">
@@ -137,7 +137,7 @@
              * Constructs a `groupsState` hash object using the
              * `getFilterGroupSelectors()` API method.
              *
-             * @return {void}
+             * @return {object}
              */
 
             function getGroupsState() {
@@ -146,9 +146,9 @@
                 // in your HTML.
 
                 var groupsState = {
-                    color: mixer.getFilterGroupSelectors('color'),
-                    shape: mixer.getFilterGroupSelectors('shape'),
-                    size: mixer.getFilterGroupSelectors('size')
+                    color: mixer.getFilterGroupSelectors('color').map(getValueFromSelector),
+                    shape: mixer.getFilterGroupSelectors('shape').map(getValueFromSelector),
+                    size: mixer.getFilterGroupSelectors('size').map(getValueFromSelector)
                 };
 
                 return groupsState;
@@ -202,13 +202,35 @@
                 var size = (groupsState && groupsState.size) ? groupsState.size : [];
                 var shape = (groupsState && groupsState.shape) ? groupsState.shape : [];
 
-                mixer.setFilterGroupSelectors('color', color);
-                mixer.setFilterGroupSelectors('size', size);
-                mixer.setFilterGroupSelectors('shape', shape);
+                mixer.setFilterGroupSelectors('color', color.map(getSelectorFromValue));
+                mixer.setFilterGroupSelectors('size', size.map(getSelectorFromValue));
+                mixer.setFilterGroupSelectors('shape', shape.map(getSelectorFromValue));
 
                 // Parse the filter groups (passing `false` will perform no animation)
 
                 return mixer.parseFilterGroups(animate ? true : false);
+            }
+
+            /**
+             * Converts a selector (e.g. '.green') into a simple value (e.g. 'green').
+             *
+             * @param   {string} selector
+             * @return  {string}
+             */
+
+            function getValueFromSelector(selector) {
+                return selector.replace(/^./, '');
+            }
+
+            /**
+             * Converts a simple value (e.g. 'green') into a selector (e.g. '.green').
+             *
+             * @param   {string} selector
+             * @return  {string}
+             */
+
+            function getSelectorFromValue(value) {
+                return '.' + value;
             }
 
             var groupsState = deserializeHash();
