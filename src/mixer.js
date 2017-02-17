@@ -362,8 +362,8 @@ mixitup.Mixer.extend(
      */
 
     setFilterGroupSelectors: function(groupName, selectors) {
-        var self        = this,
-            filterGroup = null;
+        var self            = this,
+            filterGroup     = null;
 
         selectors = Array.isArray(selectors) ? selectors : [selectors];
 
@@ -371,8 +371,17 @@ mixitup.Mixer.extend(
             throw new Error('[MixItUp MultiFilter] No filter group could be found with the name "' + groupName + '"');
         }
 
-        filterGroup.activeSelectors = selectors.slice();
-        filterGroup.updateUi();
+        filterGroup.activeToggles = selectors.slice();
+
+        if (filterGroup.logic === 'and') {
+            // Compress into single node
+
+            filterGroup.activeSelectors = [filterGroup.activeToggles];
+        } else {
+            filterGroup.activeSelectors = filterGroup.activeToggles;
+        }
+
+        filterGroup.updateUi(filterGroup.activeToggles);
     },
 
     /**
@@ -400,6 +409,6 @@ mixitup.Mixer.extend(
             throw new Error('[MixItUp MultiFilter] No filter group could be found with the name "' + groupName + '"');
         }
 
-        return filterGroup.activeSelectors.slice();
+        return filterGroup.activeToggles.slice();
     }
 });

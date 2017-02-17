@@ -1,11 +1,11 @@
 /**!
- * MixItUp MultiFilter v3.2.0
+ * MixItUp MultiFilter v3.2.1
  * A UI-builder for powerful multidimensional filtering
- * Build c55eb4d7-2126-42f6-8ffa-23b360050e93
+ * Build c024b1b0-4bc3-405a-9ade-95130321ba11
  *
  * Requires mixitup.js >= v^3.1.2
  *
- * @copyright Copyright 2014-2016 KunkaLabs Limited.
+ * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
  * @link      https://www.kunkalabs.com/mixitup-multifilter/
  *
@@ -234,6 +234,7 @@
                     // override default group logic
 
                     self.logic = 'and';
+
                 }
 
                 self.bindEvents();
@@ -337,7 +338,7 @@
                 if (controlEl.matches('[data-filter]')) {
                     selector = controlEl.getAttribute('data-filter');
 
-                    self.activeSelectors = [selector];
+                    self.activeSelectors = self.activeToggles = [selector];
                 } else if (controlEl.matches('[data-toggle]')) {
                     selector = controlEl.getAttribute('data-toggle');
 
@@ -378,7 +379,7 @@
                 switch(input.type) {
                     case 'text':
                     case 'search':
-                    case 'password':
+                    case 'email':
                     case 'select-one':
                     case 'radio':
                         self.getSingleValue(input);
@@ -399,6 +400,10 @@
             handleKeyup: function(e) {
                 var self    = this,
                     input   = e.target;
+
+                // NB: Selects can fire keyup events (e.g. multiselect, textual search)
+
+                if (['text', 'search', 'email']) return;
 
                 if (self.mixer.config.multifilter.parseOn !== 'change') {
                     self.mixer.getSingleValue(input);
@@ -476,7 +481,7 @@
                     selector        = '',
                     value           = '';
 
-                if (input.type.match(/text|search|password/g)) {
+                if (input.type.match(/text|search|email/g)) {
                     attributeName = input.getAttribute('data-search-attribute');
 
                     if (!attributeName) {
@@ -484,7 +489,7 @@
                     }
 
                     if (input.value.length < self.mixer.config.multifilter.minSearchLength) {
-                        self.activeSelectors = [''];
+                        self.activeSelectors = self.activeToggles = [''];
 
                         return;
                     }
@@ -497,7 +502,7 @@
                 }
 
                 if (typeof input.value === 'string') {
-                    self.activeSelectors = [selector];
+                    self.activeSelectors = self.activeToggles = [selector];
                 }
             },
 
@@ -509,7 +514,7 @@
 
             getMultipleValues: function(input) {
                 var self            = this,
-                    activeSelectors   = [],
+                    activeToggles   = [],
                     query           = '',
                     item            = null,
                     items           = null,
@@ -528,27 +533,28 @@
 
                 for (i = 0; item = items[i]; i++) {
                     if ((item.checked || item.selected) && item.value) {
-                        activeSelectors.push(item.value);
+                        activeToggles.push(item.value);
                     }
                 }
+
+                self.activeToggles = activeToggles;
 
                 if (self.logic === 'and') {
                     // Compress into single node
 
-                    activeSelectors = [activeSelectors];
+                    self.activeSelectors = [activeToggles];
+                } else {
+                    self.activeSelectors = activeToggles;
                 }
-
-                self.activeSelectors = activeSelectors;
             },
 
             /**
              * @private
              * @param   {Array.<HTMLELement>} [controlEls]
-             * @param   {boolean}             [activateToggles]
              * @return  {void}
              */
 
-            updateControls: function(controlEls, activateToggles) {
+            updateControls: function(controlEls) {
                 var self        = this,
                     controlEl   = null,
                     type        = 'filter',
@@ -556,14 +562,12 @@
 
                 controlEls = controlEls || self.dom.el.querySelectorAll('[data-filter], [data-toggle]');
 
-                activateToggles = activateToggles || false;
-
                 for (i = 0; controlEl = controlEls[i]; i++) {
                     if (controlEl.getAttribute('data-toggle')) {
                         type = 'toggle';
                     }
 
-                    self.updateControl(controlEl, type, activateToggles);
+                    self.updateControl(controlEl, type);
                 }
             },
 
@@ -571,23 +575,18 @@
              * @private
              * @param   {HTMLELement}   controlEl
              * @param   {string}        type
-             * @param   {boolean}       [activateToggle]
              * @return  {void}
              */
 
-            updateControl: function(controlEl, type, activateToggle) {
+            updateControl: function(controlEl, type) {
                 var self            = this,
                     selector        = controlEl.getAttribute('data-' + type),
                     activeClassName = '';
 
                 activeClassName = h.getClassname(self.mixer.config.classNames, type, self.mixer.config.classNames.modifierActive);
 
-                if (self.activeSelectors.indexOf(selector) > -1) {
+                if (self.activeToggles.indexOf(selector) > -1) {
                     h.addClass(controlEl, activeClassName);
-
-                    if (activateToggle) {
-                        self.activeToggles.push(selector);
-                    }
                 } else {
                     h.removeClass(controlEl, activeClassName);
                 }
@@ -606,13 +605,11 @@
                     i           = -1;
 
                 if (controlEls.length) {
-                    self.activeToggles = [];
-
                     self.updateControls(controlEls, true);
                 }
 
                 for (i = 0; inputEl = inputEls[i]; i++) {
-                    isActive = self.activeSelectors.indexOf(inputEl.value) > -1;
+                    isActive = self.activeToggles.indexOf(inputEl.value) > -1;
 
                     switch (inputEl.tagName.toLowerCase()) {
                         case 'option':
@@ -994,8 +991,8 @@
              */
 
             setFilterGroupSelectors: function(groupName, selectors) {
-                var self        = this,
-                    filterGroup = null;
+                var self            = this,
+                    filterGroup     = null;
 
                 selectors = Array.isArray(selectors) ? selectors : [selectors];
 
@@ -1003,8 +1000,17 @@
                     throw new Error('[MixItUp MultiFilter] No filter group could be found with the name "' + groupName + '"');
                 }
 
-                filterGroup.activeSelectors = selectors.slice();
-                filterGroup.updateUi();
+                filterGroup.activeToggles = selectors.slice();
+
+                if (filterGroup.logic === 'and') {
+                    // Compress into single node
+
+                    filterGroup.activeSelectors = [filterGroup.activeToggles];
+                } else {
+                    filterGroup.activeSelectors = filterGroup.activeToggles;
+                }
+
+                filterGroup.updateUi(filterGroup.activeToggles);
             },
 
             /**
@@ -1032,7 +1038,7 @@
                     throw new Error('[MixItUp MultiFilter] No filter group could be found with the name "' + groupName + '"');
                 }
 
-                return filterGroup.activeSelectors.slice();
+                return filterGroup.activeToggles.slice();
             }
         });
 
@@ -1044,7 +1050,7 @@
 
     mixitupMultifilter.TYPE                    = 'mixitup-extension';
     mixitupMultifilter.NAME                    = 'mixitup-multifilter';
-    mixitupMultifilter.EXTENSION_VERSION       = '3.2.0';
+    mixitupMultifilter.EXTENSION_VERSION       = '3.2.1';
     mixitupMultifilter.REQUIRE_CORE_VERSION    = '^3.1.2';
 
     if (typeof exports === 'object' && typeof module === 'object') {

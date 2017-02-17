@@ -7,7 +7,7 @@ Change Log
 
 ## 3.0.1
 
-- Fixed issue where e.preventDefault() was called on reset events preventing reset functionality. Many additional demos added.
+- Fixes issue where e.preventDefault() was called on reset events preventing reset functionality. Many additional demos added.
 
 ## 3.0.2
 
@@ -24,7 +24,7 @@ selectors and prevent inteference by third-party markup which may share the mand
 
 ## 3.1.1
 
-- Fixes issue where empty string values in `<select>` elements were ignored.
+- Fixes an issue where empty string values in `<select>` elements were ignored.
 
 ## 3.1.2
 
@@ -34,3 +34,8 @@ selectors and prevent inteference by third-party markup which may share the mand
 
 - Adds `.setFilterGroupSelectors()` and `.getFilterGroupSelectors()` methods to allow multi dimensional filtering
 and programmatic control of the UI via the API.
+
+## 3.2.1
+
+- Fixes an issue where the "active" class name was not added to toggles if "and" logic was used within a group.
+- Fixes an issue where "keyup" events from non-textual inputs (i.e. multiselect) were unintentionally handled and fired filter operations.
