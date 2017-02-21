@@ -39,3 +39,8 @@ and programmatic control of the UI via the API.
 
 - Fixes an issue where the "active" class name was not added to toggles if "and" logic was used within a group.
 - Fixes an issue where "keyup" events from non-textual inputs (i.e. multiselect) were unintentionally handled and fired filter operations.
+
+## 3.3.0
+
+- Adds a new API method `parseFilterGroupsToSelector()`, enabling the retrieval of the resulting selector without triggering a filter operation.
+- Fixes issue introduced in 3.2.1 regarding "keyup" events from legitimate text inputs not being handled.

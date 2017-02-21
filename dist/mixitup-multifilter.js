@@ -1,7 +1,7 @@
 /**!
- * MixItUp MultiFilter v3.2.1
+ * MixItUp MultiFilter v3.3.0
  * A UI-builder for powerful multidimensional filtering
- * Build c024b1b0-4bc3-405a-9ade-95130321ba11
+ * Build 1e1e6266-a774-47f8-bd68-7e299b70b66c
  *
  * Requires mixitup.js >= v^3.1.2
  *
@@ -403,7 +403,7 @@
 
                 // NB: Selects can fire keyup events (e.g. multiselect, textual search)
 
-                if (['text', 'search', 'email']) return;
+                if (['text', 'search', 'email'].indexOf(input.type) < 0) return;
 
                 if (self.mixer.config.multifilter.parseOn !== 'change') {
                     self.mixer.getSingleValue(input);
@@ -904,8 +904,38 @@
 
             /**
              * Traverses the currently active filters in all groups, building up a
+             * compound selector string as per the defined logic. The resulting
+             * selector is then returned.
+             *
+             * This method can be used to programmatically trigger the parsing of
+             * filter groups after manipulations to a group's active selector(s) by
+             * the `.setFilterGroupSelectors()` API method.
+             *
+             * @example
+             *
+             * .parseFilterGroupsToSelector()
+             *
+             * @public
+             * @since 3.3.0
+             * @return {string}
+             */
+
+            parseFilterGroupsToSelector: function() {
+                var self        = this,
+                    paths       = self.getFilterGroupPaths(),
+                    selector    = self.buildSelectorFromPaths(paths);
+
+                if (selector === '') {
+                    selector = self.config.controls.toggleDefault;
+                }
+
+                return selector;
+            },
+
+            /**
+             * Traverses the currently active filters in all groups, building up a
              * compound selector string as per the defined logic. A filter operation
-             * is then called on the mixer using the generated selector.
+             * is then called on the mixer using the resulting selector.
              *
              * This method can be used to programmatically trigger the parsing of
              * filter groups after manipulations to a group's active selector(s) by
@@ -938,12 +968,7 @@
             parseFilterGroups: function() {
                 var self        = this,
                     instruction = self.parseFilterArgs(arguments),
-                    paths       = self.getFilterGroupPaths(),
-                    selector    = self.buildSelectorFromPaths(paths);
-
-                if (selector === '') {
-                    selector = self.config.controls.toggleDefault;
-                }
+                    selector    = self.parseFilterGroupsToSelector();
 
                 instruction.command.selector = selector;
 
@@ -1043,14 +1068,15 @@
         });
 
         mixitup.Facade.registerAction('afterConstruct', 'multifilter', function(mixer) {
-            this.parseFilterGroups       = mixer.parseFilterGroups.bind(mixer);
-            this.setFilterGroupSelectors = mixer.setFilterGroupSelectors.bind(mixer);
-            this.getFilterGroupSelectors = mixer.getFilterGroupSelectors.bind(mixer);
+            this.parseFilterGroups              = mixer.parseFilterGroups.bind(mixer);
+            this.parseFilterGroupsToSelector    = mixer.parseFilterGroupsToSelector.bind(mixer);
+            this.setFilterGroupSelectors        = mixer.setFilterGroupSelectors.bind(mixer);
+            this.getFilterGroupSelectors        = mixer.getFilterGroupSelectors.bind(mixer);
         });    };
 
     mixitupMultifilter.TYPE                    = 'mixitup-extension';
     mixitupMultifilter.NAME                    = 'mixitup-multifilter';
-    mixitupMultifilter.EXTENSION_VERSION       = '3.2.1';
+    mixitupMultifilter.EXTENSION_VERSION       = '3.3.0';
     mixitupMultifilter.REQUIRE_CORE_VERSION    = '^3.1.2';
 
     if (typeof exports === 'object' && typeof module === 'object') {

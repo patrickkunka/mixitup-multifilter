@@ -212,7 +212,7 @@ h.extend(mixitup.FilterGroup.prototype, {
 
         // NB: Selects can fire keyup events (e.g. multiselect, textual search)
 
-        if (['text', 'search', 'email']) return;
+        if (['text', 'search', 'email'].indexOf(input.type) < 0) return;
 
         if (self.mixer.config.multifilter.parseOn !== 'change') {
             self.mixer.getSingleValue(input);

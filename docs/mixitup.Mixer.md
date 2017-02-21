@@ -10,9 +10,30 @@ core documentation.
 
 ### Contents
 
+- [parseFilterGroupsToSelector()](#parseFilterGroupsToSelector)
 - [parseFilterGroups()](#parseFilterGroups)
 - [setFilterGroupSelectors()](#setFilterGroupSelectors)
 - [getFilterGroupSelectors()](#getFilterGroupSelectors)
+
+
+<h3 id="parseFilterGroupsToSelector">parseFilterGroupsToSelector()</h3>
+
+*Version added: 3.3.0*
+
+`.parseFilterGroupsToSelector()`
+
+Traverses the currently active filters in all groups, building up a
+compound selector string as per the defined logic. The resulting
+selector is then returned.
+
+This method can be used to programmatically trigger the parsing of
+filter groups after manipulations to a group's active selector(s) by
+the `.setFilterGroupSelectors()` API method.
+
+|   |Type | Name | Description
+|---|--- | --- | ---
+|Returns |`string` | 
+
 
 
 <h3 id="parseFilterGroups">parseFilterGroups()</h3>
@@ -23,7 +44,7 @@ core documentation.
 
 Traverses the currently active filters in all groups, building up a
 compound selector string as per the defined logic. A filter operation
-is then called on the mixer using the generated selector.
+is then called on the mixer using the resulting selector.
 
 This method can be used to programmatically trigger the parsing of
 filter groups after manipulations to a group's active selector(s) by

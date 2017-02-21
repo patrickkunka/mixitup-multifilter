@@ -275,8 +275,38 @@ mixitup.Mixer.extend(
 
     /**
      * Traverses the currently active filters in all groups, building up a
+     * compound selector string as per the defined logic. The resulting
+     * selector is then returned.
+     *
+     * This method can be used to programmatically trigger the parsing of
+     * filter groups after manipulations to a group's active selector(s) by
+     * the `.setFilterGroupSelectors()` API method.
+     *
+     * @example
+     *
+     * .parseFilterGroupsToSelector()
+     *
+     * @public
+     * @since 3.3.0
+     * @return {string}
+     */
+
+    parseFilterGroupsToSelector: function() {
+        var self        = this,
+            paths       = self.getFilterGroupPaths(),
+            selector    = self.buildSelectorFromPaths(paths);
+
+        if (selector === '') {
+            selector = self.config.controls.toggleDefault;
+        }
+
+        return selector;
+    },
+
+    /**
+     * Traverses the currently active filters in all groups, building up a
      * compound selector string as per the defined logic. A filter operation
-     * is then called on the mixer using the generated selector.
+     * is then called on the mixer using the resulting selector.
      *
      * This method can be used to programmatically trigger the parsing of
      * filter groups after manipulations to a group's active selector(s) by
@@ -309,12 +339,7 @@ mixitup.Mixer.extend(
     parseFilterGroups: function() {
         var self        = this,
             instruction = self.parseFilterArgs(arguments),
-            paths       = self.getFilterGroupPaths(),
-            selector    = self.buildSelectorFromPaths(paths);
-
-        if (selector === '') {
-            selector = self.config.controls.toggleDefault;
-        }
+            selector    = self.parseFilterGroupsToSelector();
 
         instruction.command.selector = selector;
 
