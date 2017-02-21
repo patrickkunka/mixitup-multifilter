@@ -42,5 +42,5 @@ and programmatic control of the UI via the API.
 
 ## 3.3.0
 
-- Adds a new API method `parseFilterGroupsToSelector()`, enabling the retrieval of the resulting selector without triggering a filter operation.
+- Adds a new callback method `onParseFilterGroups()`, enabling transformation of the resulting multimix command.
 - Fixes issue introduced in 3.2.1 regarding "keyup" events from legitimate text inputs not being handled.
