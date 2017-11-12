@@ -6,7 +6,7 @@
         <link href="../reset.css" rel="stylesheet"/>
         <link href="./style.css" rel="stylesheet"/>
 
-        <title>MixItUp MultiFilter Demo - Programmatic Filtering by URL</title>
+        <title>MixItUp MultiFilter Demo - Programmatic Filtering by URL with Pagination</title>
     </head>
     <body>
         <!--
@@ -14,6 +14,9 @@
         and the mixer simultanesouly on page load.
 
         Click on some filters to create your desired filtering then refresh the page.
+
+        This demo also includes functionality to include current page number in the URL,
+        for those users who wish to use the Pagination and MultiFilter extensions together.
         -->
 
         <form class="controls">
@@ -73,13 +76,26 @@
             <div class="gap"></div>
         </div>
 
+        <div class="controls-pagination">
+            <div class="mixitup-page-list"></div>
+            <div class="mixitup-page-stats"></div>
+        </div>
+
         <script src="../mixitup.min.js"></script>
         <script src="../mixitup-multifilter.min.js"></script>
+
+        <!--
+        This demo requires the Pagination premium extension. Update the following
+        script tag's `src` to a valid reference on your filesystem:
+        -->
+
+        <script src="../path/to/your/mixitup-pagination.min.js"></script>
 
         <script>
             var containerEl = document.querySelector('.container');
             var targetSelector = '.mix';
             var activeHash = '';
+            var activePage = -1;
 
             /**
              * Deserializes a hash segment (if present) into in an object.
@@ -90,18 +106,18 @@
             function deserializeHash() {
                 var hash    = window.location.hash.replace(/^#/g, '');
                 var obj     = null;
-                var groups  = [];
+                var props   = [];
 
                 if (!hash) return obj;
 
                 obj = {};
-                groups = hash.split('&');
+                props = hash.split('&');
 
-                groups.forEach(function(group) {
-                    var pair = group.split('=');
-                    var groupName = pair[0];
+                props.forEach(function(props) {
+                    var pair = props.split('=');
+                    var propName = pair[0];
 
-                    obj[groupName] = pair[1].split(',');
+                    obj[propName] = propName === 'page' ? parseInt(pair[1]) : pair[1].split(',');
                 });
 
                 return obj;
@@ -120,10 +136,10 @@
                 for (var key in uiState) {
                     var values = uiState[key];
 
-                    if (!values.length) continue;
+                    if (Array.isArray(values) && !values.length) continue;
 
                     output += key + '=';
-                    output += values.join(',');
+                    output += Array.isArray(values) ? values.join(',') : values;
                     output += '&';
                 };
 
@@ -140,7 +156,9 @@
              */
 
             function getUiState() {
-                // NB: You will need to rename the object keys to match the names of
+                var page = mixer.getState().activePagination.page;
+
+                // NB: You will need to rename the following keys to match the names of
                 // your project's filter groups – these should match those defined
                 // in your HTML.
 
@@ -150,11 +168,15 @@
                     size: mixer.getFilterGroupSelectors('size').map(getValueFromSelector)
                 };
 
+                if (page > 1) {
+                    uiState.page = page;
+                }
+
                 return uiState;
             }
 
             /**
-             * Updates the URL hash whenever the current filter changes.
+             * Updates the URL hash whenever the current UI state changes.
              *
              * @param   {mixitup.State} state
              * @return  {void}
@@ -167,18 +189,19 @@
                 // filter group
 
                 var uiState = getUiState();
+                var page = uiState.page || 1;
 
                 // Create a URL hash string by serializing the uiState object
 
                 var newHash = '#' + serializeUiState(uiState);
 
-                if (selector === targetSelector && window.location.href.indexOf('#') > -1) {
+                if (selector === targetSelector && window.location.href.indexOf('#') > -1 && page === 1) {
                     // Equivalent to filter "all", and a hash exists, remove the hash
 
                     activeHash = '';
 
                     history.replaceState(null, document.title, window.location.pathname);
-                } else if (newHash !== window.location.hash && selector !== targetSelector) {
+                } else if (newHash !== window.location.hash && selector !== targetSelector || page > 1) {
                     // Change the hash
 
                     activeHash = newHash;
@@ -199,6 +222,8 @@
                 var color = (uiState && uiState.color) ? uiState.color : [];
                 var size = (uiState && uiState.size) ? uiState.size : [];
                 var shape = (uiState && uiState.shape) ? uiState.shape : [];
+
+                activePage = (uiState && uiState.page) ? uiState.page : 1;
 
                 mixer.setFilterGroupSelectors('color', color.map(getSelectorFromValue));
                 mixer.setFilterGroupSelectors('size', size.map(getSelectorFromValue));
@@ -231,6 +256,26 @@
                 return '.' + value;
             }
 
+            /**
+             * A function for filtering the values of the mixitup command object
+             * generated by calling the `parseFilterGroups()` method.
+             *
+             * @param  {object} command
+             * @return {object}
+             */
+
+            function handleParseFilterGroups(command) {
+                if (activePage > 1) {
+                    // If an activePage greater than 1 has been parsed
+                    // from the URL, update the command with a pagination
+                    // instruction
+
+                    command.paginate = activePage;
+                }
+
+                return command;
+            }
+
             var uiState = deserializeHash();
 
             // Instantiate MixItUp
@@ -239,10 +284,15 @@
                 multifilter: {
                     enable: true
                 },
+                pagination: {
+                    limit: 4,
+                    maintainActivePage: false
+                },
                 animation: {
                     effects: 'fade translateZ(-100px)'
                 },
                 callbacks: {
+                    onParseFilterGroups: handleParseFilterGroups,
                     onMixEnd: setHash // Call the setHash() method at the end of each operation
                 }
             });

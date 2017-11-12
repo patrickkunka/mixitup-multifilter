@@ -131,6 +131,8 @@ h.extend(mixitup.FilterGroup.prototype, {
 
     handleClick: function(e) {
         var self            = this,
+            mixer           = self.mixer,
+            returnValue     = null,
             controlEl       = h.closestParent(e.target, '[data-filter], [data-toggle]', true),
             controlSelector = '',
             index           = -1,
@@ -143,6 +145,20 @@ h.extend(mixitup.FilterGroup.prototype, {
         }
 
         e.stopPropagation();
+
+        if (!mixer.lastClicked) {
+            mixer.lastClicked = controlEl;
+        }
+
+        if (typeof mixer.config.callbacks.onMixClick === 'function') {
+            returnValue = mixer.config.callbacks.onMixClick.call(mixer.lastClicked, mixer.state, e, self);
+
+            if (returnValue === false) {
+                // User has returned `false` from the callback, so do not handle click
+
+                return;
+            }
+        }
 
         if (controlEl.matches('[data-filter]')) {
             selector = controlEl.getAttribute('data-filter');
@@ -311,7 +327,7 @@ h.extend(mixitup.FilterGroup.prototype, {
         }
 
         if (typeof input.value === 'string') {
-            self.activeSelectors = self.activeToggles = [selector];
+            self.activeSelectors = self.activeToggles = selector ? [selector] : [];
         }
     },
 

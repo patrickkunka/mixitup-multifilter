@@ -9,12 +9,14 @@
         <title>MixItUp MultiFilter Demo - Programmatic Filtering on Click</title>
     </head>
     <body>
-        <!-- This demo will show how we can programmatically update both our multifilter UI
+        <!--
+        This demo will show how we can programmatically update both our multifilter UI
         and the mixer simultanesouly, using the `setFilterGroupSelectors()` and
         `parseSelectorGroups()` API methods.
 
         Click on a target in the container, and the container will be filtered according
-        to that target's attributes.-->
+        to that target's attributes.
+        -->
 
         <form class="controls">
             <button type="reset" class="control control-text">Reset</button>
@@ -77,7 +79,7 @@
         </div>
 
         <script src="../mixitup.min.js"></script>
-        <script src="../../dist/mixitup-multifilter.js"></script>
+        <script src="../mixitup-multifilter.min.js"></script>
 
         <script>
             var containerEl = document.querySelector('.container');

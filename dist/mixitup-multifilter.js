@@ -1,7 +1,7 @@
 /**!
  * MixItUp MultiFilter v3.3.0
  * A UI-builder for powerful multidimensional filtering
- * Build 80e5e308-3902-4e4f-8c8c-4e9b732f7132
+ * Build e9c091b8-629a-4f13-ba84-3fcf595f6ac0
  *
  * Requires mixitup.js >= v^3.1.2
  *
@@ -374,6 +374,8 @@
 
             handleClick: function(e) {
                 var self            = this,
+                    mixer           = self.mixer,
+                    returnValue     = null,
                     controlEl       = h.closestParent(e.target, '[data-filter], [data-toggle]', true),
                     controlSelector = '',
                     index           = -1,
@@ -386,6 +388,20 @@
                 }
 
                 e.stopPropagation();
+
+                if (!mixer.lastClicked) {
+                    mixer.lastClicked = controlEl;
+                }
+
+                if (typeof mixer.config.callbacks.onMixClick === 'function') {
+                    returnValue = mixer.config.callbacks.onMixClick.call(mixer.lastClicked, mixer.state, e, self);
+
+                    if (returnValue === false) {
+                        // User has returned `false` from the callback, so do not handle click
+
+                        return;
+                    }
+                }
 
                 if (controlEl.matches('[data-filter]')) {
                     selector = controlEl.getAttribute('data-filter');
@@ -554,7 +570,7 @@
                 }
 
                 if (typeof input.value === 'string') {
-                    self.activeSelectors = self.activeToggles = [selector];
+                    self.activeSelectors = self.activeToggles = selector ? [selector] : [];
                 }
             },
 
