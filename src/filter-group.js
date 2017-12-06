@@ -1,4 +1,4 @@
-/* global mixitup, h */
+/* global mixitup, h, diacriticsMap */
 
 mixitup.FilterGroup = function() {
     this.name               = '';
@@ -302,9 +302,11 @@ h.extend(mixitup.FilterGroup.prototype, {
 
     getSingleValue: function(input) {
         var self            = this,
+            diacriticMap    = null,
             attributeName   = '',
             selector        = '',
-            value           = '';
+            value           = '',
+            i               = -1;
 
         if (input.type.match(/text|search|email/g)) {
             attributeName = input.getAttribute('data-search-attribute');
@@ -319,7 +321,19 @@ h.extend(mixitup.FilterGroup.prototype, {
                 return;
             }
 
-            value = input.value.replace(/\W+/g, ' ').toLowerCase().trim();
+            // Lowercase and trim
+
+            value = input.value.toLowerCase().trim();
+
+            // Replace diacritics
+
+            for (i = 0; (diacriticMap = diacriticsMap[i]); i++) {
+                value = value.replace(diacriticMap[1], diacriticMap[0]);
+            }
+
+            // Strip non-word characters
+
+            value = value.replace(/\W+/g, ' ');
 
             selector = '[' + attributeName + '*="' + value + '"]';
         } else {
