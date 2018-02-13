@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## 3.3.2
+
+- Implements diacritics replacement of input value when searching by text input (e.g. "é" -> "e"). Allows loose matching of accented characters when searching providing an equivalent server-side operation is done to all values present in the HTML.
+
 ## 3.3.1
 
 - Fixes issue where a `<select>` element with no selected value yields an array with an empty string when querying its value via `.getFilterGroupSelectors()`.
