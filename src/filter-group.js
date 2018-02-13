@@ -394,17 +394,24 @@ h.extend(mixitup.FilterGroup.prototype, {
      */
 
     updateControls: function(controlEls) {
-        var self        = this,
-            controlEl   = null,
-            type        = 'filter',
-            i           = -1;
+        var self             = this,
+            controlEl        = null,
+            controlSelector  = '',
+            controlsSelector = '',
+            type             = '',
+            i                = -1;
 
-        controlEls = controlEls || self.dom.el.querySelectorAll('[data-filter], [data-toggle]');
+        controlSelector = self.mixer.config.selectors.control.trim();
+
+        controlsSelector = [
+            '[data-filter]' + controlSelector,
+            '[data-toggle]' + controlSelector
+        ].join(', ');
+
+        controlEls = controlEls || self.dom.el.querySelectorAll(controlsSelector);
 
         for (i = 0; controlEl = controlEls[i]; i++) {
-            if (controlEl.getAttribute('data-toggle')) {
-                type = 'toggle';
-            }
+            type = Boolean(controlEl.getAttribute('data-toggle')) ? 'toggle' : 'filter';
 
             self.updateControl(controlEl, type);
         }

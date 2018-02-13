@@ -1,7 +1,7 @@
 /**!
- * MixItUp MultiFilter v3.3.2
+ * MixItUp MultiFilter v3.3.3
  * A UI-builder for powerful multidimensional filtering
- * Build 4b28d0fb-6921-4a4a-aca8-efe5beb5f7ef
+ * Build d3b3cb38-83ca-4a31-95a5-d6798550f372
  *
  * Requires mixitup.js >= v^3.1.2
  *
@@ -725,17 +725,24 @@
              */
 
             updateControls: function(controlEls) {
-                var self        = this,
-                    controlEl   = null,
-                    type        = 'filter',
-                    i           = -1;
+                var self             = this,
+                    controlEl        = null,
+                    controlSelector  = '',
+                    controlsSelector = '',
+                    type             = '',
+                    i                = -1;
 
-                controlEls = controlEls || self.dom.el.querySelectorAll('[data-filter], [data-toggle]');
+                controlSelector = self.mixer.config.selectors.control.trim();
+
+                controlsSelector = [
+                    '[data-filter]' + controlSelector,
+                    '[data-toggle]' + controlSelector
+                ].join(', ');
+
+                controlEls = controlEls || self.dom.el.querySelectorAll(controlsSelector);
 
                 for (i = 0; controlEl = controlEls[i]; i++) {
-                    if (controlEl.getAttribute('data-toggle')) {
-                        type = 'toggle';
-                    }
+                    type = Boolean(controlEl.getAttribute('data-toggle')) ? 'toggle' : 'filter';
 
                     self.updateControl(controlEl, type);
                 }
@@ -1222,7 +1229,7 @@
 
     mixitupMultifilter.TYPE                    = 'mixitup-extension';
     mixitupMultifilter.NAME                    = 'mixitup-multifilter';
-    mixitupMultifilter.EXTENSION_VERSION       = '3.3.2';
+    mixitupMultifilter.EXTENSION_VERSION       = '3.3.3';
     mixitupMultifilter.REQUIRE_CORE_VERSION    = '^3.1.2';
 
     if (typeof exports === 'object' && typeof module === 'object') {
