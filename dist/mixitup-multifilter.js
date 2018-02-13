@@ -1,11 +1,11 @@
 /**!
- * MixItUp MultiFilter v3.3.0
+ * MixItUp MultiFilter v3.3.1
  * A UI-builder for powerful multidimensional filtering
- * Build e9c091b8-629a-4f13-ba84-3fcf595f6ac0
+ * Build b295cf03-add7-4f88-8897-56280995fa2f
  *
  * Requires mixitup.js >= v^3.1.2
  *
- * @copyright Copyright 2014-2017 KunkaLabs Limited.
+ * @copyright Copyright 2014-2018 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
  * @link      https://www.kunkalabs.com/mixitup-multifilter/
  *
@@ -983,13 +983,9 @@
              *
              * .parseFilterGroups([animate] [, callback])
              *
-             * @example <caption>Example: Triggering parsing after manually selecting all checkboxes in a group</caption>
+             * @example <caption>Example: Triggering parsing after programmatically changing the values of a filter group</caption>
              *
-             * var checkboxes = Array.from(document.querySelectorAll('.my-group > input[type="checkbox"]'));
-             *
-             * checkboxes.forEach(function(checkbox) {
-             *     checkbox.checked = true;
-             * });
+             * mixer.setFilterGroupSelectors('color', ['.green', '.blue']);
              *
              * mixer.parseFilterGroups();
              *
@@ -1124,7 +1120,7 @@
 
     mixitupMultifilter.TYPE                    = 'mixitup-extension';
     mixitupMultifilter.NAME                    = 'mixitup-multifilter';
-    mixitupMultifilter.EXTENSION_VERSION       = '3.3.0';
+    mixitupMultifilter.EXTENSION_VERSION       = '3.3.1';
     mixitupMultifilter.REQUIRE_CORE_VERSION    = '^3.1.2';
 
     if (typeof exports === 'object' && typeof module === 'object') {

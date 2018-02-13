@@ -36,15 +36,11 @@ the `.setFilterGroupSelectors()` API method.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-###### Example: Triggering parsing after manually selecting all checkboxes in a group
+###### Example: Triggering parsing after programmatically changing the values of a filter group
 
 ```js
 
-var checkboxes = Array.from(document.querySelectorAll('.my-group > input[type="checkbox"]'));
-
-checkboxes.forEach(function(checkbox) {
-    checkbox.checked = true;
-});
+mixer.setFilterGroupSelectors('color', ['.green', '.blue']);
 
 mixer.parseFilterGroups();
 ```

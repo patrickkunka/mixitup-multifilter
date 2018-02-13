@@ -286,13 +286,9 @@ mixitup.Mixer.extend(
      *
      * .parseFilterGroups([animate] [, callback])
      *
-     * @example <caption>Example: Triggering parsing after manually selecting all checkboxes in a group</caption>
+     * @example <caption>Example: Triggering parsing after programmatically changing the values of a filter group</caption>
      *
-     * var checkboxes = Array.from(document.querySelectorAll('.my-group > input[type="checkbox"]'));
-     *
-     * checkboxes.forEach(function(checkbox) {
-     *     checkbox.checked = true;
-     * });
+     * mixer.setFilterGroupSelectors('color', ['.green', '.blue']);
      *
      * mixer.parseFilterGroups();
      *
