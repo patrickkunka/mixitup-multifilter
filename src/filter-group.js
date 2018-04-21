@@ -4,6 +4,7 @@ mixitup.FilterGroup = function() {
     this.name               = '';
     this.dom                = new mixitup.FilterGroupDom();
     this.activeSelectors    = [];
+    this.activeFilters      = [];
     this.activeToggles      = [];
     this.handler            = null;
     this.mixer              = null;
@@ -163,9 +164,12 @@ h.extend(mixitup.FilterGroup.prototype, {
         if (controlEl.matches('[data-filter]')) {
             selector = controlEl.getAttribute('data-filter');
 
-            self.activeSelectors = self.activeToggles = [selector];
+            self.activeToggles = [];
+            self.activeSelectors = self.activeFilters = [selector];
         } else if (controlEl.matches('[data-toggle]')) {
             selector = controlEl.getAttribute('data-toggle');
+
+            self.activeFilters = [];
 
             if ((index = self.activeToggles.indexOf(selector)) > -1) {
                 self.activeToggles.splice(index, 1);
@@ -261,7 +265,8 @@ h.extend(mixitup.FilterGroup.prototype, {
         }
 
         if (e.type === 'reset') {
-            self.activeToggles   = [];
+            self.activeFilters    =
+            self.activeToggles   =
             self.activeSelectors = [];
 
             self.updateControls();
@@ -316,7 +321,7 @@ h.extend(mixitup.FilterGroup.prototype, {
             }
 
             if (input.value.length < self.mixer.config.multifilter.minSearchLength) {
-                self.activeSelectors = self.activeToggles = [''];
+                self.activeSelectors = self.activeFilters = self.activeToggles = [''];
 
                 return;
             }
@@ -341,7 +346,10 @@ h.extend(mixitup.FilterGroup.prototype, {
         }
 
         if (typeof input.value === 'string') {
-            self.activeSelectors = self.activeToggles = selector ? [selector] : [];
+            self.activeSelectors =
+            self.activeToggles =
+            self.activeFilters =
+                    selector ? [selector] : [];
         }
     },
 
@@ -376,6 +384,7 @@ h.extend(mixitup.FilterGroup.prototype, {
             }
         }
 
+        self.activeFilters = [];
         self.activeToggles = activeToggles;
 
         if (self.logic === 'and') {
@@ -427,11 +436,12 @@ h.extend(mixitup.FilterGroup.prototype, {
     updateControl: function(controlEl, type) {
         var self            = this,
             selector        = controlEl.getAttribute('data-' + type),
+            activeControls  = self.activeToggles.concat(self.activeFilters),
             activeClassName = '';
 
         activeClassName = h.getClassname(self.mixer.config.classNames, type, self.mixer.config.classNames.modifierActive);
 
-        if (self.activeToggles.indexOf(selector) > -1) {
+        if (activeControls.indexOf(selector) > -1) {
             h.addClass(controlEl, activeClassName);
         } else {
             h.removeClass(controlEl, activeClassName);
@@ -443,19 +453,20 @@ h.extend(mixitup.FilterGroup.prototype, {
      */
 
     updateUi: function() {
-        var self        = this,
-            controlEls  = self.dom.el.querySelectorAll('[data-filter], [data-toggle]'),
-            inputEls    = self.dom.el.querySelectorAll('input[type="radio"], input[type="checkbox"], option'),
-            isActive    = false,
-            inputEl     = null,
-            i           = -1;
+        var self           = this,
+            controlEls     = self.dom.el.querySelectorAll('[data-filter], [data-toggle]'),
+            inputEls       = self.dom.el.querySelectorAll('input[type="radio"], input[type="checkbox"], option'),
+            activeControls = self.activeToggles.concat(self.activeFilters),
+            isActive       = false,
+            inputEl        = null,
+            i              = -1;
 
         if (controlEls.length) {
             self.updateControls(controlEls, true);
         }
 
         for (i = 0; inputEl = inputEls[i]; i++) {
-            isActive = self.activeToggles.indexOf(inputEl.value) > -1;
+            isActive = activeControls.indexOf(inputEl.value) > -1;
 
             switch (inputEl.tagName.toLowerCase()) {
                 case 'option':

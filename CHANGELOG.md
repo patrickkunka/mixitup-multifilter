@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## 3.3.4
+- Fixes a bug whereby filters within a group where not deactivated when toggles in the same group were activated.
+- Adds a new demo "Filter and Toggle Controls" to demonstrate functionality.
+
 ## 3.3.3
 - Fixes a bug causing filter controls to be treated like toggle controls when in a mixed field group.
 
