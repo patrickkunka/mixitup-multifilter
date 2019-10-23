@@ -411,6 +411,6 @@ mixitup.Mixer.extend(
             throw new Error('[MixItUp MultiFilter] No filter group could be found with the name "' + groupName + '"');
         }
 
-        return filterGroup.activeToggles.slice();
+        return filterGroup.activeSelectors.slice();
     }
 });

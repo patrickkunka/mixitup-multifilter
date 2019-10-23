@@ -1,11 +1,11 @@
 /**!
- * MixItUp MultiFilter v3.3.4
+ * MixItUp MultiFilter v3.3.5
  * A UI-builder for powerful multidimensional filtering
- * Build 6bbb142d-9851-4ca8-b6d4-f760362d93ec
+ * Build a0f59b1f-79d2-497e-ad03-41e60504e957
  *
  * Requires mixitup.js >= v^3.1.2
  *
- * @copyright Copyright 2014-2018 KunkaLabs Limited.
+ * @copyright Copyright 2014-2019 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
  * @link      https://www.kunkalabs.com/mixitup-multifilter/
  *
@@ -356,8 +356,10 @@
              */
 
             init: function(el, mixer) {
-                var self  = this,
-                    logic = el.getAttribute('data-logic');
+                var self   = this,
+                    logic  = el.getAttribute('data-logic'),
+                    inputs = [],
+                    i      = -1;
 
                 self.dom.el = el;
 
@@ -379,6 +381,22 @@
                 }
 
                 self.bindEvents();
+
+                if (el.type === 'fieldset') {
+                    for (i = 0; i < el.elements.length; i++) {
+                        if (el.elements[i].tagName === 'INPUT') {
+                            inputs.push(el.elements[i]);
+                        }
+                    }
+
+                    if (inputs[0]) {
+                        var changeEvent = new CustomEvent('change', {
+                            bubbles: true
+                        });
+
+                        inputs[0].dispatchEvent(changeEvent);
+                    }
+                }
             },
 
             /**
@@ -1228,7 +1246,7 @@
                     throw new Error('[MixItUp MultiFilter] No filter group could be found with the name "' + groupName + '"');
                 }
 
-                return filterGroup.activeToggles.slice();
+                return filterGroup.activeSelectors.slice();
             }
         });
 
@@ -1240,7 +1258,7 @@
 
     mixitupMultifilter.TYPE                    = 'mixitup-extension';
     mixitupMultifilter.NAME                    = 'mixitup-multifilter';
-    mixitupMultifilter.EXTENSION_VERSION       = '3.3.4';
+    mixitupMultifilter.EXTENSION_VERSION       = '3.3.5';
     mixitupMultifilter.REQUIRE_CORE_VERSION    = '^3.1.2';
 
     if (typeof exports === 'object' && typeof module === 'object') {
