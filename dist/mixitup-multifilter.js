@@ -1,11 +1,11 @@
 /**!
- * MixItUp MultiFilter v3.3.5
+ * MixItUp MultiFilter v3.3.6
  * A UI-builder for powerful multidimensional filtering
- * Build a0f59b1f-79d2-497e-ad03-41e60504e957
+ * Build 293e0dda-087e-4a76-aadf-e3e8b311b81f
  *
  * Requires mixitup.js >= v^3.1.2
  *
- * @copyright Copyright 2014-2019 KunkaLabs Limited.
+ * @copyright Copyright 2014-2020 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
  * @link      https://www.kunkalabs.com/mixitup-multifilter/
  *
@@ -356,10 +356,8 @@
              */
 
             init: function(el, mixer) {
-                var self   = this,
-                    logic  = el.getAttribute('data-logic'),
-                    inputs = [],
-                    i      = -1;
+                var self  = this,
+                    logic = el.getAttribute('data-logic');
 
                 self.dom.el = el;
 
@@ -381,22 +379,6 @@
                 }
 
                 self.bindEvents();
-
-                if (el.type === 'fieldset') {
-                    for (i = 0; i < el.elements.length; i++) {
-                        if (el.elements[i].tagName === 'INPUT') {
-                            inputs.push(el.elements[i]);
-                        }
-                    }
-
-                    if (inputs[0]) {
-                        var changeEvent = new CustomEvent('change', {
-                            bubbles: true
-                        });
-
-                        inputs[0].dispatchEvent(changeEvent);
-                    }
-                }
             },
 
             /**
@@ -1258,7 +1240,7 @@
 
     mixitupMultifilter.TYPE                    = 'mixitup-extension';
     mixitupMultifilter.NAME                    = 'mixitup-multifilter';
-    mixitupMultifilter.EXTENSION_VERSION       = '3.3.5';
+    mixitupMultifilter.EXTENSION_VERSION       = '3.3.6';
     mixitupMultifilter.REQUIRE_CORE_VERSION    = '^3.1.2';
 
     if (typeof exports === 'object' && typeof module === 'object') {
