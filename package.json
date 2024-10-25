@@ -8,7 +8,7 @@
   "main": "./dist/mixitup-multifilter.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/patrickkunka/mixitup/"
+    "url": "https://github.com/patrickkunka/mixitup-multifilter/"
   },
   "dependencies": {
       "mixitup": "^3.1.2"
