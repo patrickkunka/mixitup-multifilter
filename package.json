@@ -1,13 +1,15 @@
 {
   "name": "mixitup-multifilter",
   "title": "MixItUp MultiFilter",
-  "version": "3.3.6",
+  "version": "3.3.7",
   "description": "A UI-builder for powerful multidimensional filtering",
   "author": "KunkaLabs Limited",
-  "homepage": "https://www.kunkalabs.com/mixitup-multifilter/",
-  "license" : "SEE LICENSE IN license.md",
-  "private": true,
+  "license" : "Apache-2.0",
   "main": "./dist/mixitup-multifilter.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/patrickkunka/mixitup/"
+  },
   "dependencies": {
       "mixitup": "^3.1.2"
   },

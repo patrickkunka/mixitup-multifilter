@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+## 3.3.7
+- Non run-time changes to licensing and distribution model
+
 ## 3.3.6
 - Fixes a bug accidentally introduced in v3.3.5 which resulted in a fatal exception on initialisation when using "programmatic filtering by URL" and fieldsets with `<input>` elements within them.
 

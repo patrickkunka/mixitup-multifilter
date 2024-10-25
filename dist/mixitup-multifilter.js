@@ -1,19 +1,14 @@
 /**!
- * MixItUp MultiFilter v3.3.6
+ * MixItUp MultiFilter v3.3.7
  * A UI-builder for powerful multidimensional filtering
  * Build 293e0dda-087e-4a76-aadf-e3e8b311b81f
  *
  * Requires mixitup.js >= v^3.1.2
  *
- * @copyright Copyright 2014-2020 KunkaLabs Limited.
+ * @copyright Copyright 2014-2024 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
- * @link      https://www.kunkalabs.com/mixitup-multifilter/
- *
- * @license   Commercial use requires a commercial license.
- *            https://www.kunkalabs.com/mixitup-multifilter/licenses/
- *
- *            Non-commercial use permitted under same terms as  license.
- *            http://creativecommons.org/licenses/by-nc/3.0/
+ * @link      https://github.com/patrickkunka/mixitup-multifilter/
+ * @license   Apache-2.0
  */
 (function(window) {
     'use strict';
@@ -1240,7 +1235,7 @@
 
     mixitupMultifilter.TYPE                    = 'mixitup-extension';
     mixitupMultifilter.NAME                    = 'mixitup-multifilter';
-    mixitupMultifilter.EXTENSION_VERSION       = '3.3.6';
+    mixitupMultifilter.EXTENSION_VERSION       = '3.3.7';
     mixitupMultifilter.REQUIRE_CORE_VERSION    = '^3.1.2';
 
     if (typeof exports === 'object' && typeof module === 'object') {

@@ -1,6 +1,14 @@
+# 📣 November 2024 Update 📣
+
+The MixItUp MultiFilter Extension is now **fully open source** and publicly available for all types of use. A purchase or commercial license is no longer required.
+
+Read more: http://github.com/patrickkunka/mixitup#november-2024-update
+
+---
+
 # MixItUp MultiFilter
 
-MixItUp MultiFilter is a premium extension for MixItUp 3 and makes building multidimensional filtering UI effortless.
+MixItUp MultiFilter is an extension for MixItUp 3 and makes building multidimensional filtering UI effortless.
 
 ### Features
 
@@ -21,11 +29,15 @@ MixItUp MultiFilter is a premium extension for MixItUp 3 and makes building mult
 
 *NB: If you're looking to integrate server-side ajax multidimensional with MixItUp, consider using MixItUp 3's Dataset API.*
 
+### Demos
+
+Hosted interactive demos may be found at [patrickkunka.github.io/mixitup-multifilter/demos](https://patrickkunka.github.io/mixitup-multifilter/demos). The documented source code of each demo can be found in the [/demos](./demos/) directory if this repository.
+
 ## Get Started
 
 ### Installing Extensions
 
-Premium extensions are not publicly available via GitHub or NPM and must therefore be downloaded from your KunkaLabs account after purchase. Once downloaded they can be included in your project in a directory of your choosing, and then required as modules, or globally via a script tag.
+MixItUp extensions may be included in your project via NPM and imported as modules, or loaded globally via a script tag.
 
 #### Script Tag
 
@@ -45,10 +57,10 @@ If using a script tag, you simply need to load the multifilter distribution scri
 If you are building a modular JavaScript project with Webpack, Browserify, or RequireJS, no global variables are exposed. Firstly require both the MixItUp core *and* the MultiFilter extension into your module. Then call `mixitup.use()` with the extension passed in as an argument. Your extension will be installed and made available to all MixItUp instances throughout your project.
 
 ```js
-// ES2015
+// ES2015+
 
-import mixitup from 'mixitup'; // loaded from node_modules
-import mixitupMultifilter from '../path/to/mixitup-multifilter'; // loaded from a directory of your choice within your project
+import mixitup from 'mixitup';
+import mixitupMultifilter from 'mixitup-multifilter';
 
 // Call the mixitup factory's .use() method, passing in the extension to install it
 
@@ -59,7 +71,7 @@ mixitup.use(mixitupMultifilter);
 // CommonJS
 
 var mixitup = require('mixitup');
-var mixitupMultifilter = require('../path/to/mixitup-mulfitiler');
+var mixitupMultifilter = require('mixitup-mulfitiler');
 
 mixitup.use(mixitupMultifilter);
 ```
@@ -69,7 +81,7 @@ mixitup.use(mixitupMultifilter);
 
 require([
     'mixitup',
-    '../path/to/mixitup-multifilter'
+    'mixitup-multifilter'
 ], function(
     mixitup,
     mixitupMultifilter
@@ -98,9 +110,9 @@ var mixer = mixitup(containerEl, {
 
 MixItUp MultiFilter is designed to be used with content requiring filtering by multiple distinct attributes or "dimensions". Taking a clothing store as an example, some dimensions might include **type** (e.g. sweaters, shirts, jackets), **color** (red, green, blue), and **size** (small, medium, large).
 
-Another example is our [sandbox demo](https://www.kunkalabs.com/mixitup-multifilter/) which uses the dimensions of **shape** (e.g. square, triangle, circle), **color**, and **size**.
+Another example is the [filters](https://patrickkunka.github.io/mixitup-multifilter/demos/filters) demo which uses the dimensions of **shape** (e.g. square, triangle, circle), **color**, and **size**.
 
-MixItUp MultiFilter allows us to combine filter selectors within each of these dimensions, using a variety of logic. To learn more about MixItUp filter logic, you may wish to read the [Filtering with MixItUp](https://www.kunkalabs.com/tutorials/filtering-with-mixitup/) tutorial before continuing.
+MixItUp MultiFilter allows us to combine filter selectors within each of these dimensions, using a variety of logic. To learn more about MixItUp filter logic, you may wish to read the [Filtering with MixItUp](https://github.com/patrickkunka/mixitup/tutorials/filtering-with-mixitup.md) tutorial before continuing.
 
 ### Filter Group UI
 
@@ -126,7 +138,7 @@ You can think of your entire multifilter UI as a `<form>` with which to interact
 
 *Wrapping filter groups in a parent `<form>` is optional, but provides the ability to use submit and reset buttons as part of your UI.*
 
-In the example above, **filter control** buttons are used in the first group, and *toggle control* buttons are used in the second group. To recap the [Filtering with MixItUp](https://www.kunkalabs.com/tutorials/filtering-with-mixitup/) tutorial, filter controls allow one active control at a time, and toggle controls allow multiple active controls simultaneously. This behavior is also true when using filter groups, but is confined to within the group. Therefore, the UI above would allow us to select one type of clothing, but multiple colors.
+In the example above, **filter control** buttons are used in the first group, and *toggle control* buttons are used in the second group. To recap the [Filtering with MixItUp](https://github.com/patrickkunka/mixitup/tutorials/filtering-with-mixitup.md) tutorial, filter controls allow one active control at a time, and toggle controls allow multiple active controls simultaneously. This behavior is also true when using filter groups, but is confined to within the group. Therefore, the UI above would allow us to select one type of clothing, but multiple colors.
 
 Filter and toggle controls are just two example of the different types of UI available in MixItUp MultiFilter. Let's take a look at what else is available:
 
@@ -242,7 +254,7 @@ Defines the toggle filter state when all controls are deactivated. The available
 
 Defines whether multifilter UI should be isolated to a specific mixer (`'local'`), or global to the document (`'global'`).
 
-See the [Configuration Object](https://www.kunkalabs.com/mixitup-multifilter/docs/configuration-object/) documentation page for more information about configuring MixItUp MultiFilter.
+See the [Configuration Object](./docs/mixitup.Config.md) documentation page for more information about configuring MixItUp MultiFilter.
 
 ### Additional Form Behavior
 
@@ -323,7 +335,7 @@ To prevent users from accidentally triggering an HTTP form submission by clickin
 
 #### Named Filter Groups
 
-If we wish to interact with our filter groups via the `.setFilterGroupSelectors()` API method (see [Mixer API Methods](https://www.kunkalabs.com/mixitup-multifilter/api-methods/)), we can name our groups by providing a value to `data-filter-group` attribute.
+If we wish to interact with our filter groups via the `.setFilterGroupSelectors()` API method (see [Mixer API Methods](./docs/mixitup.Mixer.md)), we can name our groups by providing a value to `data-filter-group` attribute.
 
 ```html
 <form>
