@@ -8,7 +8,7 @@ Read more: http://github.com/patrickkunka/mixitup#november-2024-update
 
 # MixItUp MultiFilter
 
-MixItUp MultiFilter is an extension for MixItUp 3 and makes building multidimensional filtering UI effortless.
+MixItUp MultiFilter is an extension for [MixItUp](https://github.com/patrickkunka/mixitup) which makes building multidimensional filtering UI effortless.
 
 ### Features
 
