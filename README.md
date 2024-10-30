@@ -2,7 +2,7 @@
 
 The MixItUp MultiFilter Extension is now **fully open source** and publicly available for all types of use. A purchase or commercial license is no longer required.
 
-Read more: http://github.com/patrickkunka/mixitup#november-2024-update
+Read more: [MixItUp - November 2024 Update](https://github.com/patrickkunka/mixitup?tab=readme-ov-file#-november-2024-update-)
 
 ---
 
