@@ -8,6 +8,8 @@ Read more: [MixItUp - November 2024 Update](https://github.com/patrickkunka/mixi
 
 # MixItUp MultiFilter
 
+[![Latest Release](https://img.shields.io/npm/v/mixitup-multifilter.svg?style=flat-square)](https://www.npmjs.com/package/mixitup-multifilter)
+
 MixItUp MultiFilter is an extension for [MixItUp](https://github.com/patrickkunka/mixitup) which makes building multidimensional filtering UI effortless.
 
 ### Features
